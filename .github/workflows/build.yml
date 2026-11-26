@@ -1,0 +1,27 @@
+name: Build Android APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Init Capacitor & Build APK
+        run: |
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "1Money BYN Pro" "by.onemoney.pro" --web-dir www
+          npx cap add android
+          cd android && ./gradlew assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: 1Money-BYN-Pro-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          
