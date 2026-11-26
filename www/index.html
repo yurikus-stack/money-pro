@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>1Money BYN PRO</title>
+  <title>Money</title>
   <style>
     :root {
       --bg: #070d16;
-      --card: #0e1726;
+      --card: #0d1624;
       --card-2: #132033;
-      --border: #1e2f47;
-      --text: #f1f5f9;
+      --border: rgba(148, 163, 184, 0.14);
+      --border-strong: rgba(16, 185, 129, 0.34);
+      --text: #f8fafc;
       --muted: #94a3b8;
       --accent: #10b981;
+      --accent-2: #059669;
+      --gold: #eab308;
       --danger: #ef4444;
+      --warn: #f59e0b;
     }
 
     * {
@@ -24,23 +28,27 @@
     body {
       margin: 0;
       padding: 0;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at 80% -10%, rgba(16, 185, 129, 0.12), transparent 45%),
+        radial-gradient(circle at 10% 10%, rgba(234, 179, 8, 0.06), transparent 40%),
+        var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
-      padding-bottom: 84px;
+      padding-bottom: 96px;
     }
 
+    /* Экран запуска сразу со знаком доллара */
     #splash-screen {
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: radial-gradient(circle at center, #0f2922 0%, #070d16 70%);
+      background: radial-gradient(circle at center, #0e2920 0%, #070d16 72%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.45s ease, visibility 0.45s ease;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
     }
 
     #splash-screen.hide {
@@ -49,41 +57,36 @@
       pointer-events: none;
     }
 
-    .dollar-badge {
-      width: 96px;
-      height: 96px;
-      border-radius: 28px;
+    .splash-dollar {
+      width: 98px;
+      height: 98px;
+      border-radius: 30px;
       background: linear-gradient(145deg, #10b981, #047857);
+      border: 1px solid rgba(250, 204, 21, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 52px;
+      font-size: 54px;
       font-weight: 800;
       color: #ffffff;
-      box-shadow: 0 0 40px rgba(16, 185, 129, 0.45);
-      animation: pulseDollar 1.1s ease-in-out infinite alternate;
+      box-shadow: 0 0 48px rgba(16, 185, 129, 0.45);
+      animation: dollarBreath 1.1s ease-in-out infinite alternate;
     }
 
-    @keyframes pulseDollar {
+    @keyframes dollarBreath {
       from { transform: scale(0.96); }
-      to { transform: scale(1.05); }
+      to { transform: scale(1.04); }
     }
 
-    .splash-title {
+    .splash-brand {
       margin-top: 16px;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-    }
-
-    .splash-sub {
-      margin-top: 4px;
-      font-size: 13px;
-      color: var(--muted);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
 
     .container {
-      max-width: 640px;
+      max-width: 680px;
       margin: 0 auto;
       padding: 14px;
     }
@@ -92,48 +95,73 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 14px;
     }
 
-    .brand {
+    .brand-box {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .brand-icon {
+    .brand-mark {
       width: 40px;
       height: 40px;
-      border-radius: 12px;
-      background: #10b981;
-      color: #062118;
+      border-radius: 13px;
+      background: linear-gradient(145deg, #10b981, #047857);
+      border: 1px solid rgba(250, 204, 21, 0.35);
+      color: #fff;
       font-weight: 800;
+      font-size: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
     }
 
-    .brand-name {
-      font-weight: 700;
-      font-size: 16px;
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .pro-badge {
-      background: rgba(16, 185, 129, 0.18);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.35);
+    .lux-tag {
       font-size: 10px;
       font-weight: 700;
+      color: #facc15;
+      background: rgba(234, 179, 8, 0.14);
+      border: 1px solid rgba(234, 179, 8, 0.3);
       padding: 2px 6px;
-      border-radius: 6px;
-      margin-left: 6px;
+      border-radius: 999px;
     }
 
-    .brand-sub {
-      font-size: 12px;
+    .muted {
       color: var(--muted);
+      font-size: 12px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(19, 32, 51, 0.78) 0%, rgba(13, 22, 36, 0.94) 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .hero-balance {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-top: 4px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -142,9 +170,13 @@
       color: var(--text);
       border-radius: 12px;
       padding: 8px 12px;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     .btn:active {
@@ -152,41 +184,27 @@
     }
 
     .btn-primary {
-      background: var(--accent);
-      border-color: var(--accent);
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-color: transparent;
       color: #042117;
+    }
+
+    .btn-gold {
+      background: rgba(234, 179, 8, 0.14);
+      border-color: rgba(234, 179, 8, 0.35);
+      color: #fde047;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.14);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
     }
 
     .btn-sm {
       padding: 6px 10px;
-      font-size: 12px;
+      font-size: 11px;
       border-radius: 10px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-
-    .balance-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .balance-main {
-      font-size: 28px;
-      font-weight: 800;
-      margin-top: 4px;
     }
 
     .fx-grid {
@@ -196,84 +214,129 @@
       margin-top: 12px;
     }
 
-    .fx-box {
-      background: var(--bg);
+    .fx-item {
+      background: rgba(7, 13, 22, 0.65);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 13px;
       padding: 8px 10px;
     }
 
-    .fx-code {
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .fx-val {
-      font-size: 15px;
-      font-weight: 700;
-      margin-top: 2px;
-    }
-
-    .section-title {
+    .section-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin: 14px 0 8px;
+    }
+
+    .section-title {
       font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
       color: var(--muted);
     }
 
-    .link-action {
-      color: #34d399;
+    .link-btn {
       background: none;
       border: none;
+      color: #34d399;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       padding: 4px;
-      text-transform: none;
-      letter-spacing: 0;
     }
 
-    .list-item {
+    .clickable-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
       gap: 10px;
+      padding: 11px 10px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.15s ease;
     }
 
-    .list-item:last-child {
-      border-bottom: none;
+    .clickable-row:hover,
+    .clickable-row:active {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .row-divider {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(148, 163, 184, 0.14);
+      color: var(--muted);
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.16);
+      color: #34d399;
+    }
+
+    .pill-red {
+      background: rgba(239, 68, 68, 0.16);
+      color: #f87171;
+    }
+
+    .pill-gold {
+      background: rgba(234, 179, 8, 0.16);
+      color: #facc15;
     }
 
     .progress-track {
       height: 8px;
-      background: var(--bg);
+      background: rgba(7, 13, 22, 0.8);
       border-radius: 999px;
       overflow: hidden;
-      margin-top: 6px;
+      margin-top: 7px;
     }
 
     .progress-fill {
       height: 100%;
-      background: var(--accent);
+      background: linear-gradient(90deg, #10b981, #34d399);
       border-radius: 999px;
       transition: width 0.25s ease;
     }
 
+    .cat-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .cat-chip {
+      border: 1px solid var(--border);
+      background: rgba(7, 13, 22, 0.65);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .cat-chip.active {
+      border-color: var(--accent);
+      background: rgba(16, 185, 129, 0.18);
+      color: #6ee7b7;
+    }
+
+    /* Аналитика: график + кольцевая диаграмма */
     .period-tabs {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 6px;
-      background: var(--bg);
+      background: rgba(7, 13, 22, 0.75);
       padding: 4px;
-      border-radius: 12px;
+      border-radius: 13px;
       margin-bottom: 10px;
     }
 
@@ -300,163 +363,252 @@
       margin-bottom: 10px;
     }
 
-    .stats-3 {
+    .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       margin-bottom: 12px;
     }
 
-    .stat-mini {
-      background: var(--bg);
+    .stat-box {
+      background: rgba(7, 13, 22, 0.65);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 8px;
+      border-radius: 13px;
+      padding: 9px;
     }
 
-    .stat-mini .num {
+    .stat-num {
       font-size: 14px;
       font-weight: 800;
       margin-top: 3px;
     }
 
-    .chart-wrap {
-      background: var(--bg);
+    .chart-card {
+      background: rgba(7, 13, 22, 0.65);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 12px;
+      margin-bottom: 12px;
     }
 
-    .chart-bars {
+    .bars-stage {
       display: flex;
       align-items: flex-end;
-      gap: 8px;
+      gap: 6px;
       height: 150px;
-      padding-top: 14px;
+      padding-top: 12px;
     }
 
-    .chart-col {
+    .bar-col {
       flex: 1;
+      min-width: 0;
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      height: 100%;
       justify-content: flex-end;
-      min-width: 0;
     }
 
-    .chart-bar-group {
+    .bar-pair {
+      height: 116px;
+      width: 100%;
       display: flex;
       align-items: flex-end;
-      gap: 2px;
-      width: 100%;
       justify-content: center;
-      height: 115px;
+      gap: 2px;
     }
 
-    .bar-inc, .bar-exp {
+    .b-inc, .b-exp {
       width: 42%;
       min-height: 2px;
       border-radius: 5px 5px 0 0;
       transition: height 0.25s ease;
     }
 
-    .bar-inc {
-      background: #10b981;
-    }
+    .b-inc { background: #10b981; }
+    .b-exp { background: #ef4444; }
 
-    .bar-exp {
-      background: #ef4444;
-    }
-
-    .chart-lbl {
-      margin-top: 6px;
+    .bar-lbl {
       font-size: 10px;
       color: var(--muted);
+      margin-top: 5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 100%;
     }
 
-    .chart-legend {
+    .donut-wrap {
       display: flex;
-      gap: 14px;
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 10px;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
     }
 
-    .dot-inc, .dot-exp {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
+    .donut-ring {
+      width: 176px;
+      height: 176px;
       border-radius: 50%;
-      margin-right: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 0 28px rgba(0, 0, 0, 0.35);
     }
 
-    .dot-inc { background: #10b981; }
-    .dot-exp { background: #ef4444; }
+    .donut-hole {
+      width: 122px;
+      height: 122px;
+      border-radius: 50%;
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .cat-breakdown-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .cat-breakdown-row:last-child {
+      border-bottom: none;
+    }
+
+    .color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
 
     .hidden {
       display: none !important;
     }
 
+    /* Нижнее меню с SVG и центральным + */
     .bottom-nav {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
-      z-index: 100;
-      background: rgba(10, 18, 30, 0.96);
-      backdrop-filter: blur(10px);
+      z-index: 200;
+      background: rgba(8, 15, 26, 0.96);
+      backdrop-filter: blur(14px);
       border-top: 1px solid var(--border);
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
       padding: 6px 4px 10px;
     }
 
-    .nav-btn {
+    .nav-item {
       background: none;
       border: none;
-      color: var(--muted);
+      color: #8da2b8;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 3px;
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 10px;
+      font-weight: 700;
       cursor: pointer;
       padding: 4px 2px;
     }
 
-    .nav-btn.active {
-      color: #34d399;
+    .nav-item.active {
+      color: #10b981;
     }
 
-    .nav-icon {
-      font-size: 17px;
-      line-height: 1;
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 500;
-      background: rgba(0, 0, 0, 0.72);
+    .fab-holder {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
     }
 
-    .modal-card {
+    .fab-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 17px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: linear-gradient(145deg, #10b981, #047857);
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.42);
+      transform: translateY(-12px);
+    }
+
+    .fab-btn:active {
+      transform: translateY(-12px) scale(0.95);
+    }
+
+    .fab-btn svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+    }
+
+    /* Модальные окна и меню действий */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 600;
+      background: rgba(0, 0, 0, 0.74);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    @media (min-width: 560px) {
+      .modal-backdrop {
+        align-items: center;
+      }
+    }
+
+    .modal-panel {
       width: 100%;
-      max-width: 420px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
+      max-width: 460px;
+      max-height: 88vh;
+      overflow-y: auto;
+      background: #0e1726;
+      border: 1px solid var(--border-strong);
+      border-radius: 22px;
       padding: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .sheet-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
     }
 
     .field {
@@ -465,22 +617,26 @@
 
     .field label {
       display: block;
-      font-size: 12px;
+      font-size: 11px;
+      font-weight: 700;
       color: var(--muted);
       margin-bottom: 4px;
     }
 
-    .field input, .field select {
+    .field input,
+    .field select,
+    .field textarea {
       width: 100%;
-      background: var(--bg);
+      background: #070d16;
       border: 1px solid var(--border);
       color: var(--text);
-      border-radius: 10px;
-      padding: 9px 10px;
+      border-radius: 11px;
+      padding: 9px 11px;
       font-size: 14px;
+      font-family: inherit;
     }
 
-    .modal-actions {
+    .modal-footer {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
@@ -489,179 +645,254 @@
   </style>
 </head>
 <body>
+  <!-- Экран запуска сразу со знаком доллара -->
   <div id="splash-screen">
-    <div class="dollar-badge">$</div>
-    <div class="splash-title">1Money BYN PRO</div>
-    <div class="splash-sub">Учёт бюджета в BYN • USD • EUR • RUB</div>
+    <div class="splash-dollar">$</div>
+    <div class="splash-brand">Money</div>
   </div>
 
   <div class="container">
     <div class="topbar">
-      <div class="brand">
-        <div class="brand-icon">1M</div>
+      <div class="brand-box">
+        <div class="brand-mark">$</div>
         <div>
-          <div class="brand-name">1Money BYN <span class="pro-badge">PRO</span></div>
-          <div class="brand-sub">Умный контроль бюджета</div>
+          <div class="brand-title">Money <span class="lux-tag">PRO</span></div>
+          <div class="muted">BYN • USD • EUR • RUB</div>
         </div>
       </div>
-      <button class="btn btn-sm" onclick="openRatesModal()">Курсы</button>
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-sm" onclick="openRatesModal()">Курсы</button>
+        <button class="btn btn-sm" onclick="openBackupModal()">Данные</button>
+      </div>
     </div>
 
+    <!-- ВКЛАДКА 1: ГЛАВНАЯ -->
     <section id="tab-home">
       <div class="card">
-        <div class="balance-head">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
           <div>
-            <div class="muted">Доступный баланс</div>
-            <div class="balance-main" id="total-byn">0.00 BYN</div>
+            <div class="muted">Общий капитал (счета + сбережения)</div>
+            <div class="hero-balance" id="hero-total-byn">0.00 BYN</div>
+            <div class="muted" id="hero-wallets-only" style="margin-top:2px;">Счета: 0.00 BYN • Сбережения: 0.00 BYN</div>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openTxModal('expense')">+ Операция</button>
+          <div class="hero-actions">
+            <button class="btn btn-primary btn-sm" onclick="openTxModal('expense')">- Расход</button>
+            <button class="btn btn-sm" onclick="openTxModal('income')">+ Доход</button>
+            <button class="btn btn-gold btn-sm" onclick="openTransferModal()">Перевод</button>
+          </div>
         </div>
 
         <div class="fx-grid">
-          <div class="fx-box">
-            <div class="fx-code">USD $</div>
-            <div class="fx-val" id="bal-usd">0.00</div>
+          <div class="fx-item">
+            <div class="muted">USD $</div>
+            <div style="font-weight:800; font-size:15px; margin-top:2px;" id="eq-usd">0.00</div>
           </div>
-          <div class="fx-box">
-            <div class="fx-code">EUR €</div>
-            <div class="fx-val" id="bal-eur">0.00</div>
+          <div class="fx-item">
+            <div class="muted">EUR €</div>
+            <div style="font-weight:800; font-size:15px; margin-top:2px;" id="eq-eur">0.00</div>
           </div>
-          <div class="fx-box">
-            <div class="fx-code">RUB ₽</div>
-            <div class="fx-val" id="bal-rub">0</div>
+          <div class="fx-item">
+            <div class="muted">RUB ₽</div>
+            <div style="font-weight:800; font-size:15px; margin-top:2px;" id="eq-rub">0</div>
           </div>
         </div>
       </div>
 
-      <div class="section-title">
-        <span>Кошельки и счета</span>
-        <button class="link-action" onclick="openWalletModal()">Новый кошелёк</button>
+      <!-- Счета (кликабельные) -->
+      <div class="section-head">
+        <span class="section-title">Счета и кошельки</span>
+        <button class="link-btn" onclick="openWalletModal()">+ Счёт</button>
       </div>
-      <div class="card" id="wallets-list"></div>
+      <div class="card" id="wallets-box"></div>
 
-      <div class="section-title">
-        <span>Цели накопления</span>
-        <button class="link-action" onclick="openGoalModal()">Новая цель</button>
+      <!-- Сбережения (кликабельные, пополнение с выбранного кошелька) -->
+      <div class="section-head">
+        <span class="section-title">Сбережения</span>
+        <button class="link-btn" onclick="openSavingModal()">+ Сбережение</button>
       </div>
-      <div class="card" id="goals-list"></div>
+      <div class="card" id="savings-box"></div>
 
-      <div class="section-title">
-        <span>Регулярные платежи</span>
-        <button class="link-action" onclick="openTxModal('expense', true)">Добавить</button>
+      <!-- Категории расходов -->
+      <div class="section-head">
+        <span class="section-title">Категории расходов</span>
+        <button class="link-btn" onclick="openCategoriesManager()">Настроить</button>
       </div>
-      <div class="card" id="recurring-list"></div>
+      <div class="card">
+        <div class="cat-chips" id="home-categories-chips"></div>
+      </div>
+
+      <!-- Регулярные платежи -->
+      <div class="section-head">
+        <span class="section-title">Регулярные платежи</span>
+        <button class="link-btn" onclick="openRecurringModal()">+ Платёж</button>
+      </div>
+      <div class="card" id="recurring-box"></div>
     </section>
 
+    <!-- ВКЛАДКА 2: ОПЕРАЦИИ -->
     <section id="tab-ops" class="hidden">
       <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
           <div>
-            <div style="font-weight:700;">Все операции</div>
-            <div class="muted">Доходы, расходы и регулярные платежи</div>
+            <div style="font-weight:800;">История операций</div>
+            <div class="muted">Нажмите на запись, чтобы изменить или удалить</div>
           </div>
           <div style="display:flex; gap:6px;">
-            <button class="btn btn-sm btn-primary" onclick="openTxModal('income')">+ Доход</button>
+            <button class="btn btn-primary btn-sm" onclick="openTxModal('income')">+ Доход</button>
             <button class="btn btn-sm" onclick="openTxModal('expense')">- Расход</button>
+            <button class="btn btn-gold btn-sm" onclick="openTransferModal()">Перевод</button>
           </div>
         </div>
+        <div style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;">
+          <button class="cat-chip active" data-f="all" onclick="setOpsFilter('all')">Все</button>
+          <button class="cat-chip" data-f="expense" onclick="setOpsFilter('expense')">Расходы</button>
+          <button class="cat-chip" data-f="income" onclick="setOpsFilter('income')">Доходы</button>
+          <button class="cat-chip" data-f="transfer" onclick="setOpsFilter('transfer')">Переводы</button>
+        </div>
       </div>
-      <div class="card" id="ops-list"></div>
+      <div class="card" id="ops-box"></div>
     </section>
 
-    <section id="tab-projects" class="hidden">
-      <div class="section-title">
-        <span>Проекты и Своё дело</span>
-        <button class="link-action" onclick="openProjectModal()">Новый проект</button>
+    <!-- ВКЛАДКА 3: ДЕЛА, КРЕДИТЫ И ДОЛГИ -->
+    <section id="tab-plan" class="hidden">
+      <div class="section-head">
+        <span class="section-title">Кредиты</span>
+        <button class="link-btn" onclick="openCreditModal()">+ Кредит</button>
       </div>
-      <div class="card" id="projects-list"></div>
+      <div class="card" id="credits-box"></div>
 
-      <div class="section-title">
-        <span>Долги и обязательства</span>
-        <button class="link-action" onclick="openDebtModal()">Добавить</button>
+      <div class="section-head">
+        <span class="section-title">Долги</span>
+        <button class="link-btn" onclick="openDebtModal()">+ Долг</button>
       </div>
-      <div class="card" id="debts-list"></div>
+      <div class="card" id="debts-box"></div>
+
+      <div class="section-head">
+        <span class="section-title">Проекты и дела</span>
+        <button class="link-btn" onclick="openProjectModal()">+ Проект</button>
+      </div>
+      <div class="card" id="projects-box"></div>
     </section>
 
+    <!-- ВКЛАДКА 4: АНАЛИТИКА, ГРАФИК И ДИАГРАММА -->
     <section id="tab-analytics" class="hidden">
       <div class="card">
         <div class="period-tabs">
-          <button class="period-btn active" data-p="day" onclick="setAnalyticsPeriod('day')">День</button>
-          <button class="period-btn" data-p="month" onclick="setAnalyticsPeriod('month')">Месяц</button>
-          <button class="period-btn" data-p="year" onclick="setAnalyticsPeriod('year')">Год</button>
-          <button class="period-btn" data-p="all" onclick="setAnalyticsPeriod('all')">Всё время</button>
+          <button class="period-btn active" data-p="day" onclick="setPeriod('day')">День</button>
+          <button class="period-btn" data-p="month" onclick="setPeriod('month')">Месяц</button>
+          <button class="period-btn" data-p="year" onclick="setPeriod('year')">Год</button>
+          <button class="period-btn" data-p="all" onclick="setPeriod('all')">Всё время</button>
         </div>
 
         <div class="period-nav">
-          <button class="btn btn-sm" onclick="shiftAnalyticsDate(-1)">◀ Назад</button>
-          <strong id="analytics-period-label" style="font-size:13px;"></strong>
-          <button class="btn btn-sm" onclick="shiftAnalyticsDate(1)">Вперёд ▶</button>
+          <button class="btn btn-sm" onclick="shiftPeriod(-1)">◀ Назад</button>
+          <strong id="period-label" style="font-size:13px;"></strong>
+          <button class="btn btn-sm" onclick="shiftPeriod(1)">Вперёд ▶</button>
         </div>
 
-        <div class="stats-3">
-          <div class="stat-mini">
+        <div class="stats-grid">
+          <div class="stat-box">
             <div class="muted">Доходы</div>
-            <div class="num" id="stat-income" style="color:#34d399;">0.00</div>
+            <div class="stat-num" id="an-inc" style="color:#34d399;">0.00</div>
           </div>
-          <div class="stat-mini">
+          <div class="stat-box">
             <div class="muted">Расходы</div>
-            <div class="num" id="stat-expense" style="color:#f87171;">0.00</div>
+            <div class="stat-num" id="an-exp" style="color:#f87171;">0.00</div>
           </div>
-          <div class="stat-mini">
-            <div class="muted">Разница</div>
-            <div class="num" id="stat-net">0.00</div>
+          <div class="stat-box">
+            <div class="muted">Итог</div>
+            <div class="stat-num" id="an-net">0.00</div>
           </div>
         </div>
 
-        <div class="chart-wrap">
-          <div style="font-size:12px; font-weight:700; margin-bottom:4px;">График по периоду (BYN)</div>
-          <div class="chart-bars" id="analytics-chart"></div>
-          <div class="chart-legend">
-            <span><i class="dot-inc"></i>Доходы</span>
-            <span><i class="dot-exp"></i>Расходы</span>
+        <!-- График по периоду -->
+        <div class="chart-card">
+          <div style="font-size:13px; font-weight:800; margin-bottom:4px;">Динамика по периоду (BYN)</div>
+          <div class="bars-stage" id="bar-chart"></div>
+          <div style="display:flex; gap:14px; font-size:11px; color:var(--muted); margin-top:8px;">
+            <span><i class="color-dot" style="background:#10b981;"></i>Доходы</span>
+            <span><i class="color-dot" style="background:#ef4444;"></i>Расходы</span>
           </div>
+        </div>
+
+        <!-- Престижная кольцевая диаграмма по категориям -->
+        <div class="chart-card">
+          <div style="font-size:13px; font-weight:800; margin-bottom:10px;">Расходы по категориям</div>
+          <div class="donut-wrap" id="donut-chart"></div>
         </div>
       </div>
     </section>
   </div>
 
+  <!-- Нижняя панель навигации с SVG и центральным + -->
   <nav class="bottom-nav">
-    <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">
-      <span class="nav-icon">🏠</span>
+    <button class="nav-item active" data-tab="home" onclick="switchTab('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
       <span>Главная</span>
     </button>
-    <button class="nav-btn" data-tab="ops" onclick="switchTab('ops')">
-      <span class="nav-icon">💳</span>
+
+    <button class="nav-item" data-tab="ops" onclick="switchTab('ops')">
+      <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
       <span>Операции</span>
     </button>
-    <button class="nav-btn" data-tab="projects" onclick="switchTab('projects')">
-      <span class="nav-icon">📁</span>
-      <span>Проекты</span>
+
+    <div class="fab-holder">
+      <button class="fab-btn" onclick="openQuickPlusMenu()" aria-label="Добавить">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+
+    <button class="nav-item" data-tab="plan" onclick="switchTab('plan')">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+      <span>Кредиты</span>
     </button>
-    <button class="nav-btn" data-tab="analytics" onclick="switchTab('analytics')">
-      <span class="nav-icon">📊</span>
-      <span>График</span>
+
+    <button class="nav-item" data-tab="analytics" onclick="switchTab('analytics')">
+      <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9v9h9z"/><path d="M12 3a9 9 0 0 1 9 9"/></svg>
+      <span>Отчёт</span>
     </button>
   </nav>
 
-  <div id="modal" class="modal-backdrop hidden" onclick="closeModalOnBackdrop(event)">
-    <div class="modal-card" id="modal-box"></div>
+  <!-- Модальное окно -->
+  <div id="modal" class="modal-backdrop hidden" onclick="onBackdropClick(event)">
+    <div class="modal-panel" id="modal-content"></div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'one_money_byn_pro_v1';
+    const STORAGE_KEY = 'money_lux_pro_v2';
 
-    function cloneDefaultState() {
+    const DEFAULT_CATEGORIES = [
+      'Еда',
+      'Развлечения',
+      'Автомобиль',
+      'Телефон',
+      'Техника',
+      'Красота',
+      'Транспорт'
+    ];
+
+    const PALETTE = [
+      '#10b981', '#3b82f6', '#f59e0b', '#ec4899',
+      '#8b5cf6', '#06b6d4', '#ef4444', '#84cc16'
+    ];
+
+    function freshState() {
       return {
         rates: { USD: 3.30, EUR: 3.55, RUB: 0.035 },
         wallets: [
-          { id: 'w1', name: 'Наличные BYN', currency: 'BYN', balance: 0 },
-          { id: 'w2', name: 'Карта банка', currency: 'BYN', balance: 0 }
+          { id: 'w_card', name: 'Карта', currency: 'BYN', balance: 0 },
+          { id: 'w_cash', name: 'Наличные', currency: 'BYN', balance: 0 }
         ],
-        goals: [],
+        savings: [
+          { id: 's_reserve', name: 'Резерв', currency: 'BYN', saved: 0, target: 1000 }
+        ],
+        categories: [...DEFAULT_CATEGORIES],
         transactions: [],
-        projects: [],
+        recurring: [],
+        credits: [],
         debts: [],
-        analytics: { period: 'day', offset: 0 }
+        projects: [],
+        ui: { period: 'day', offset: 0, opsFilter: 'all' }
       };
     }
 
@@ -670,267 +901,426 @@
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return cloneDefaultState();
-        const parsed = JSON.parse(raw);
-        const def = cloneDefaultState();
+        if (!raw) return freshState();
+        const p = JSON.parse(raw);
+        const def = freshState();
         return {
           ...def,
-          ...parsed,
-          rates: { ...def.rates, ...(parsed.rates || {}) },
-          analytics: { ...def.analytics, ...(parsed.analytics || {}) }
+          ...p,
+          rates: { ...def.rates, ...(p.rates || {}) },
+          wallets: Array.isArray(p.wallets) && p.wallets.length ? p.wallets : def.wallets,
+          savings: Array.isArray(p.savings) ? p.savings : def.savings,
+          categories: Array.isArray(p.categories) && p.categories.length ? p.categories : def.categories,
+          transactions: Array.isArray(p.transactions) ? p.transactions : [],
+          recurring: Array.isArray(p.recurring) ? p.recurring : [],
+          credits: Array.isArray(p.credits) ? p.credits : [],
+          debts: Array.isArray(p.debts) ? p.debts : [],
+          projects: Array.isArray(p.projects) ? p.projects : [],
+          ui: { ...def.ui, ...(p.ui || {}) }
         };
       } catch {
-        return cloneDefaultState();
+        return freshState();
       }
     }
 
-    function saveState() {
+    function persist() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       } catch {}
-      renderAll();
+      render();
     }
 
-    function toBYN(amount, currency) {
-      const n = Number(amount) || 0;
-      if (currency === 'BYN') return n;
-      return n * (Number(state.rates[currency]) || 1);
+    function fmt(n) {
+      const num = Number(n) || 0;
+      return num.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    function fmt(num) {
-      return (Number(num) || 0).toFixed(2);
+    function toBYN(amount, currency = 'BYN') {
+      const val = Number(amount) || 0;
+      if (currency === 'BYN') return val;
+      return val * (Number(state.rates[currency]) || 1);
     }
 
-    function switchTab(tabName) {
-      ['home', 'ops', 'projects', 'analytics'].forEach(t => {
-        const el = document.getElementById('tab-' + t);
-        if (el) el.classList.toggle('hidden', t !== tabName);
+    function fromBYN(bynAmount, currency = 'BYN') {
+      const val = Number(bynAmount) || 0;
+      if (currency === 'BYN') return val;
+      const r = Number(state.rates[currency]) || 1;
+      return val / r;
+    }
+
+    function todayISO() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function esc(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function findWallet(id) {
+      return state.wallets.find(w => w.id === id) || state.wallets[0] || null;
+    }
+
+    function findSaving(id) {
+      return state.savings.find(s => s.id === id) || null;
+    }
+
+    function switchTab(tab) {
+      ['home', 'ops', 'plan', 'analytics'].forEach(id => {
+        const el = document.getElementById('tab-' + id);
+        if (el) el.classList.toggle('hidden', id !== tab);
       });
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tabName);
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
       });
-      if (tabName === 'analytics') renderAnalytics();
+      if (tab === 'analytics') renderAnalytics();
     }
 
-    function renderAll() {
-      const totalByn = state.wallets.reduce((sum, w) => sum + toBYN(w.balance, w.currency), 0);
-      document.getElementById('total-byn').textContent = fmt(totalByn) + ' BYN';
-      document.getElementById('bal-usd').textContent = fmt(totalByn / (state.rates.USD || 3.3));
-      document.getElementById('bal-eur').textContent = fmt(totalByn / (state.rates.EUR || 3.55));
-      document.getElementById('bal-rub').textContent = Math.round(totalByn / (state.rates.RUB || 0.035));
+    function render() {
+      const walletsBYN = state.wallets.reduce((sum, w) => sum + toBYN(w.balance, w.currency), 0);
+      const savingsBYN = state.savings.reduce((sum, s) => sum + toBYN(s.saved, s.currency || 'BYN'), 0);
+      const totalBYN = walletsBYN + savingsBYN;
 
-      const wEl = document.getElementById('wallets-list');
-      wEl.innerHTML = state.wallets.length
-        ? state.wallets.map(w => `
-            <div class="list-item">
-              <div>
-                <div style="font-weight:700;">${escapeHtml(w.name)}</div>
-                <div class="muted">Валюта: ${escapeHtml(w.currency)}</div>
-              </div>
-              <div style="font-weight:800;">${fmt(w.balance)} ${escapeHtml(w.currency)}</div>
-            </div>
-          `).join('')
-        : '<div class="muted">Кошельков пока нет</div>';
+      document.getElementById('hero-total-byn').textContent = fmt(totalBYN) + ' BYN';
+      document.getElementById('hero-wallets-only').textContent =
+        `Счета: ${fmt(walletsBYN)} BYN • Сбережения: ${fmt(savingsBYN)} BYN`;
 
-      const gEl = document.getElementById('goals-list');
-      gEl.innerHTML = state.goals.length
-        ? state.goals.map(g => {
-            const pct = Math.min(100, Math.max(0, ((g.saved || 0) / (g.target || 1)) * 100));
+      document.getElementById('eq-usd').textContent = fmt(fromBYN(totalBYN, 'USD'));
+      document.getElementById('eq-eur').textContent = fmt(fromBYN(totalBYN, 'EUR'));
+      document.getElementById('eq-rub').textContent = Math.round(fromBYN(totalBYN, 'RUB')).toLocaleString('ru-RU');
+
+      // Счета (кликабельные)
+      const wBox = document.getElementById('wallets-box');
+      wBox.innerHTML = state.wallets.map((w, idx) => `
+        <div class="clickable-row ${idx < state.wallets.length - 1 ? 'row-divider' : ''}" onclick="openWalletMenu('${esc(w.id)}')">
+          <div>
+            <div style="font-weight:700;">${esc(w.name)} <span class="pill">${esc(w.currency)}</span></div>
+            <div class="muted">Нажмите для перевода, операции или правки</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:800; font-size:15px;">${fmt(w.balance)} ${esc(w.currency)}</div>
+            <div class="muted">${fmt(toBYN(w.balance, w.currency))} BYN</div>
+          </div>
+        </div>
+      `).join('');
+
+      // Сбережения (кликабельные)
+      const sBox = document.getElementById('savings-box');
+      sBox.innerHTML = state.savings.length
+        ? state.savings.map((s, idx) => {
+            const cur = s.currency || 'BYN';
+            const target = Math.max(0, Number(s.target) || 0);
+            const pct = target > 0 ? Math.min(100, Math.round(((Number(s.saved) || 0) / target) * 100)) : 0;
             return `
-              <div class="list-item" style="display:block;">
+              <div class="clickable-row ${idx < state.savings.length - 1 ? 'row-divider' : ''}" style="display:block;" onclick="openSavingMenu('${esc(s.id)}')">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <strong>${escapeHtml(g.name)}</strong>
-                  <button class="btn btn-sm" onclick="addGoalFunds('${escapeHtml(g.id)}')">+ Пополнить</button>
+                  <div>
+                    <strong>${esc(s.name)}</strong> <span class="pill pill-gold">${esc(cur)}</span>
+                  </div>
+                  <div style="font-weight:800; color:#34d399;">${fmt(s.saved)} ${esc(cur)}</div>
                 </div>
-                <div class="muted" style="margin-top:4px;">${fmt(g.saved)} / ${fmt(g.target)} BYN (${Math.round(pct)}%)</div>
-                <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+                <div class="muted" style="margin-top:3px;">
+                  ${target > 0 ? `Цель: ${fmt(target)} ${esc(cur)} (${pct}%) • ` : ''}Нажмите для пополнения со счёта
+                </div>
+                ${target > 0 ? `<div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>` : ''}
               </div>
             `;
           }).join('')
-        : '<div class="muted">Добавьте цель накопления, например на авто или ремонт</div>';
+        : '<div class="muted">Добавьте сбережение и пополняйте его с любого счёта</div>';
 
-      const rec = state.transactions.filter(t => t.recurring);
-      const rEl = document.getElementById('recurring-list');
-      rEl.innerHTML = rec.length
-        ? rec.map(t => `
-            <div class="list-item">
-              <div>
-                <strong>${escapeHtml(t.category)}</strong>
-                <div class="muted">${escapeHtml(t.date)}</div>
-              </div>
-              <div style="color:#f87171; font-weight:700;">-${fmt(t.amount)} BYN</div>
-                </div>
-                <div style="color:#f87171; font-weight:700;">-${fmt(t.amount)} BYN</div>
-            </div>
-          `).join('')
-        : '<div class="muted">Регулярных платежей пока нет</div>';
+      // Категории на главной
+      const chipsEl = document.getElementById('home-categories-chips');
+      chipsEl.innerHTML = state.categories.map(cat => `
+        <button class="cat-chip" onclick="openTxModal('expense', { category: '${esc(cat)}' })">${esc(cat)}</button>
+      `).join('');
 
-      const opsEl = document.getElementById('ops-list');
-      opsEl.innerHTML = state.transactions.length
-        ? [...state.transactions].reverse().map(t => {
-            const isInc = t.type === 'income';
+      // Регулярные платежи
+      const recBox = document.getElementById('recurring-box');
+      recBox.innerHTML = state.recurring.length
+        ? state.recurring.map((r, idx) => {
+            const w = findWallet(r.walletId);
             return `
-              <div class="list-item">
+              <div class="clickable-row ${idx < state.recurring.length - 1 ? 'row-divider' : ''}" onclick="openRecurringMenu('${esc(r.id)}')">
                 <div>
-                  <strong>${escapeHtml(t.category)}</strong>
-                  <div class="muted">${escapeHtml(t.date)}${t.note ? ' • ' + escapeHtml(t.note) : ''}</div>
+                  <strong>${esc(r.title)}</strong>
+                  <div class="muted">${esc(r.category || 'Платёж')} • Счёт: ${w ? esc(w.name) : '—'}</div>
                 </div>
-                <div style="font-weight:800; color:${isInc ? '#34d399' : '#f87171'};">
-                  ${isInc ? '+' : '-'}${fmt(t.amount)} BYN
+                <div style="text-align:right;">
+                  <div style="font-weight:800; color:#f87171;">${fmt(r.amount)} ${esc(r.currency || 'BYN')}</div>
+                  <div class="muted">Нажмите для списания</div>
                 </div>
               </div>
             `;
           }).join('')
-        : '<div class="muted">Операций пока нет</div>';
+        : '<div class="muted">Добавьте регулярный платёж (связь, аренда, взнос)</div>';
 
-      const pEl = document.getElementById('projects-list');
-      pEl.innerHTML = state.projects.length
-        ? state.projects.map(p => `
-            <div class="list-item">
-              <div>
-                <strong>${escapeHtml(p.name)}</strong>
-                <div class="muted">${escapeHtml(p.note || 'Проект / дело')}</div>
-              </div>
-              <div style="font-weight:700; color:#34d399;">${fmt(p.budget)} BYN</div>
-            </div>
-          `).join('')
-        : '<div class="muted">Проектов пока нет</div>';
-
-      const dEl = document.getElementById('debts-list');
-      dEl.innerHTML = state.debts.length
-        ? state.debts.map(d => `
-            <div class="list-item">
-              <div>
-                <strong>${escapeHtml(d.person)}</strong>
-                <div class="muted">${d.kind === 'owe_me' ? 'Мне должны' : 'Я должен'}</div>
-              </div>
-              <div style="font-weight:700; color:${d.kind === 'owe_me' ? '#34d399' : '#fbbf24'};">
-                ${fmt(d.amount)} BYN
-              </div>
-            </div>
-          `).join('')
-        : '<div class="muted">Записей по долгам пока нет</div>';
-
+      renderOps();
+      renderPlan();
       renderAnalytics();
     }
 
-    function getReferenceDate() {
-      const base = new Date();
-      const offset = state.analytics.offset || 0;
-      const p = state.analytics.period;
-      if (p === 'day') base.setDate(base.getDate() + offset);
-      if (p === 'month') base.setMonth(base.getMonth() + offset);
-      if (p === 'year') base.setFullYear(base.getFullYear() + offset);
-      return base;
-    }
-
-    function toLocalIsoDate(dateObj) {
-      const y = dateObj.getFullYear();
-      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-      const d = String(dateObj.getDate()).padStart(2, '0');
-      return `${y}-${m}-${d}`;
-    }
-
-    function setAnalyticsPeriod(period) {
-      state.analytics.period = period;
-      state.analytics.offset = 0;
-      document.querySelectorAll('.period-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.p === period);
+    function setOpsFilter(f) {
+      state.ui.opsFilter = f;
+      document.querySelectorAll('#tab-ops .cat-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.f === f);
       });
-      saveState();
+      renderOps();
     }
 
-    function shiftAnalyticsDate(delta) {
-      if (state.analytics.period === 'all') return;
-      state.analytics.offset = (state.analytics.offset || 0) + delta;
-      saveState();
+    function renderOps() {
+      const filter = state.ui.opsFilter || 'all';
+      const list = [...state.transactions]
+        .reverse()
+        .filter(t => filter === 'all' || t.kind === filter);
+
+      const box = document.getElementById('ops-box');
+      box.innerHTML = list.length
+        ? list.map((t, idx) => {
+            const isInc = t.kind === 'income';
+            const isTr = t.kind === 'transfer';
+            const color = isTr ? '#facc15' : (isInc ? '#34d399' : '#f87171');
+            const sign = isTr ? '⇄ ' : (isInc ? '+' : '-');
+            return `
+              <div class="clickable-row ${idx < list.length - 1 ? 'row-divider' : ''}" onclick="openTxMenu('${esc(t.id)}')">
+                <div>
+                  <strong>${esc(t.title)}</strong>
+                  <div class="muted">${esc(t.date)} • ${esc(t.sub || '')}</div>
+                </div>
+                <div style="font-weight:800; color:${color}; white-space:nowrap;">
+                  ${sign}${fmt(t.amount)} ${esc(t.currency || 'BYN')}
+                </div>
+              </div>
+            `;
+          }).join('')
+        : '<div class="muted">Операций по выбранному фильтру пока нет</div>';
+    }
+
+    function renderPlan() {
+      // Кредиты
+      const cBox = document.getElementById('credits-box');
+      cBox.innerHTML = state.credits.length
+        ? state.credits.map((c, idx) => `
+            <div class="clickable-row ${idx < state.credits.length - 1 ? 'row-divider' : ''}" onclick="openCreditMenu('${esc(c.id)}')">
+              <div>
+                <strong>${esc(c.name)}</strong>
+                <div class="muted">Платёж: ${fmt(c.monthlyPayment)} ${esc(c.currency || 'BYN')} • Нажмите для погашения</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-weight:800; color:#fbbf24;">${fmt(c.remaining)} ${esc(c.currency || 'BYN')}</div>
+                <div class="muted">Остаток</div>
+              </div>
+            </div>
+          `).join('')
+        : '<div class="muted">Кредитов пока нет</div>';
+
+      // Долги
+      const dBox = document.getElementById('debts-box');
+      dBox.innerHTML = state.debts.length
+        ? state.debts.map((d, idx) => {
+            const isOweMe = d.direction === 'owe_me';
+            return `
+              <div class="clickable-row ${idx < state.debts.length - 1 ? 'row-divider' : ''}" onclick="openDebtMenu('${esc(d.id)}')">
+                <div>
+                  <strong>${esc(d.person)}</strong>
+                  <div class="muted">${isOweMe ? 'Мне должны' : 'Я должен'} • Нажмите для возврата/погашения</div>
+                </div>
+                <div style="font-weight:800; color:${isOweMe ? '#34d399' : '#f87171'};">
+                  ${fmt(d.amount)} ${esc(d.currency || 'BYN')}
+                </div>
+              </div>
+            `;
+          }).join('')
+        : '<div class="muted">Долгов пока нет</div>';
+
+      // Проекты
+      const pBox = document.getElementById('projects-box');
+      pBox.innerHTML = state.projects.length
+        ? state.projects.map((p, idx) => {
+            const net = (Number(p.income) || 0) - (Number(p.expense) || 0);
+            return `
+              <div class="clickable-row ${idx < state.projects.length - 1 ? 'row-divider' : ''}" onclick="openProjectMenu('${esc(p.id)}')">
+                <div>
+                  <strong>${esc(p.name)}</strong>
+                  <div class="muted">Приход: +${fmt(p.income)} • Расход: -${fmt(p.expense)}</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-weight:800; color:${net >= 0 ? '#34d399' : '#f87171'};">
+                    ${net >= 0 ? '+' : ''}${fmt(net)} BYN
+                  </div>
+                  <div class="muted">Итог</div>
+                </div>
+              </div>
+            `;
+          }).join('')
+        : '<div class="muted">Проектов и дел пока нет</div>';
+    }
+
+    /* Аналитика: график по дням/месяцам/годам + диаграмма по категориям */
+    function setPeriod(p) {
+      state.ui.period = p;
+      state.ui.offset = 0;
+      document.querySelectorAll('.period-btn').forEach(b => b.classList.toggle('active', b.dataset.p === p));
+      persist();
+    }
+
+    function shiftPeriod(delta) {
+      if (state.ui.period === 'all') return;
+      state.ui.offset = (Number(state.ui.offset) || 0) + delta;
+      persist();
+    }
+
+    function currentRefDate() {
+      const d = new Date();
+      const off = Number(state.ui.offset) || 0;
+      const p = state.ui.period;
+      if (p === 'day') d.setDate(d.getDate() + off);
+      if (p === 'month') d.setMonth(d.getMonth() + off);
+      if (p === 'year') d.setFullYear(d.getFullYear() + off);
+      return d;
     }
 
     function renderAnalytics() {
-      const period = state.analytics.period || 'day';
-      const ref = getReferenceDate();
-      const yyyy = ref.getFullYear();
-      const mm = String(ref.getMonth() + 1).padStart(2, '0');
-      const dd = String(ref.getDate()).padStart(2, '0');
-      const isoDay = toLocalIsoDate(ref);
-      const isoMonth = `${yyyy}-${mm}`;
+      const p = state.ui.period || 'day';
+      const ref = currentRefDate();
+      const y = ref.getFullYear();
+      const m = String(ref.getMonth() + 1).padStart(2, '0');
+      const day = String(ref.getDate()).padStart(2, '0');
+      const isoDay = `${y}-${m}-${day}`;
+      const isoMonth = `${y}-${m}`;
 
       let label = '';
-      let buckets = [];
+      let cols = [];
+      let periodFilter = () => true;
 
-      if (period === 'day') {
-        label = `День: ${dd}.${mm}.${yyyy}`;
+      if (p === 'day') {
+        label = `День: ${day}.${m}.${y}`;
+        periodFilter = t => t.date === isoDay;
         for (let i = -3; i <= 3; i++) {
-          const d = new Date(ref);
-          d.setDate(d.getDate() + i);
-          const key = toLocalIsoDate(d);
-          const shortLbl = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}`;
-          buckets.push({ key, label: shortLbl, match: t => t.date === key });
+          const tmp = new Date(ref);
+          tmp.setDate(tmp.getDate() + i);
+          const k = `${tmp.getFullYear()}-${String(tmp.getMonth() + 1).padStart(2, '0')}-${String(tmp.getDate()).padStart(2, '0')}`;
+          cols.push({ lbl: `${String(tmp.getDate()).padStart(2, '0')}.${String(tmp.getMonth() + 1).padStart(2, '0')}`, match: t => t.date === k });
         }
-      } else if (period === 'month') {
-        label = `Месяц: ${mm}.${yyyy}`;
+      } else if (p === 'month') {
+        label = `Месяц: ${m}.${y}`;
+        periodFilter = t => t.date && t.date.startsWith(isoMonth);
         for (let i = -5; i <= 0; i++) {
-          const d = new Date(ref.getFullYear(), ref.getMonth() + i, 1);
-          const mStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-          buckets.push({ key: mStr, label: mStr, match: t => t.date && t.date.startsWith(mStr) });
+          const tmp = new Date(ref.getFullYear(), ref.getMonth() + i, 1);
+          const mk = `${tmp.getFullYear()}-${String(tmp.getMonth() + 1).padStart(2, '0')}`;
+          cols.push({ lbl: mk, match: t => t.date && t.date.startsWith(mk) });
         }
-      } else if (period === 'year') {
-        label = `Год: ${yyyy}`;
-        for (let m = 0; m < 12; m++) {
-          const mStr = `${yyyy}-${String(m + 1).padStart(2, '0')}`;
-          buckets.push({ key: mStr, label: String(m + 1).padStart(2, '0'), match: t => t.date && t.date.startsWith(mStr) });
+      } else if (p === 'year') {
+        label = `Год: ${y}`;
+        periodFilter = t => t.date && t.date.startsWith(String(y));
+        for (let mo = 1; mo <= 12; mo++) {
+          const mk = `${y}-${String(mo).padStart(2, '0')}`;
+          cols.push({ lbl: String(mo).padStart(2, '0'), match: t => t.date && t.date.startsWith(mk) });
         }
       } else {
         label = 'Всё время';
+        periodFilter = () => true;
         const years = [...new Set(state.transactions.map(t => (t.date || '').slice(0, 4)).filter(Boolean))].sort();
-        const list = years.length ? years : [String(yyyy)];
-        buckets = list.map(y => ({ key: y, label: y, match: t => t.date && t.date.startsWith(y) }));
+        const ys = years.length ? years : [String(y)];
+        cols = ys.map(yr => ({ lbl: yr, match: t => t.date && t.date.startsWith(yr) }));
       }
 
-      document.getElementById('analytics-period-label').textContent = label;
+      document.getElementById('period-label').textContent = label;
 
-      let periodInc = 0;
-      let periodExp = 0;
+      const filtered = state.transactions.filter(periodFilter);
+      const incTotal = filtered.filter(t => t.kind === 'income').reduce((s, t) => s + toBYN(t.amount, t.currency), 0);
+      const expTotal = filtered.filter(t => t.kind === 'expense').reduce((s, t) => s + toBYN(t.amount, t.currency), 0);
 
-      const chartData = buckets.map(b => {
-        const matched = state.transactions.filter(b.match);
-        const inc = matched.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount || 0), 0);
-        const exp = matched.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount || 0), 0);
-        if (
-          (period === 'day' && b.key === isoDay) ||
-          (period === 'month' && b.key === isoMonth) ||
-          (period === 'year' && b.key.startsWith(String(yyyy))) ||
-          period === 'all'
-        ) {
-          periodInc += inc;
-          periodExp += exp;
-        }
-        return { label: b.label, inc, exp };
+      document.getElementById('an-inc').textContent = fmt(incTotal);
+      document.getElementById('an-exp').textContent = fmt(expTotal);
+      document.getElementById('an-net').textContent = fmt(incTotal - expTotal);
+
+      const barSeries = cols.map(c => {
+        const rows = state.transactions.filter(c.match);
+        const inc = rows.filter(t => t.kind === 'income').reduce((s, t) => s + toBYN(t.amount, t.currency), 0);
+        const exp = rows.filter(t => t.kind === 'expense').reduce((s, t) => s + toBYN(t.amount, t.currency), 0);
+        return { lbl: c.lbl, inc, exp };
       });
 
-      document.getElementById('stat-income').textContent = fmt(periodInc);
-      document.getElementById('stat-expense').textContent = fmt(periodExp);
-      document.getElementById('stat-net').textContent = fmt(periodInc - periodExp);
-
-      const maxVal = Math.max(1, ...chartData.flatMap(d => [d.inc, d.exp]));
-      const chartEl = document.getElementById('analytics-chart');
-      chartEl.innerHTML = chartData.map(d => {
-        const hInc = Math.round((d.inc / maxVal) * 100);
-        const hExp = Math.round((d.exp / maxVal) * 100);
+      const maxBar = Math.max(1, ...barSeries.flatMap(x => [x.inc, x.exp]));
+      document.getElementById('bar-chart').innerHTML = barSeries.map(x => {
+        const hI = Math.round((x.inc / maxBar) * 100);
+        const hE = Math.round((x.exp / maxBar) * 100);
         return `
-          <div class="chart-col" title="${d.label}: +${fmt(d.inc)} / -${fmt(d.exp)}">
-            <div class="chart-bar-group">
-              <div class="bar-inc" style="height:${hInc}%"></div>
-              <div class="bar-exp" style="height:${hExp}%"></div>
+          <div class="bar-col">
+            <div class="bar-pair">
+              <div class="b-inc" style="height:${hI}%"></div>
+              <div class="b-exp" style="height:${hE}%"></div>
             </div>
-            <div class="chart-lbl">${d.label}</div>
+            <div class="bar-lbl">${esc(x.lbl)}</div>
           </div>
         `;
       }).join('');
+
+      // Кольцевая диаграмма по категориям расходов
+      const expOnly = filtered.filter(t => t.kind === 'expense');
+      const byCat = {};
+      expOnly.forEach(t => {
+        const k = t.category || 'Прочее';
+        byCat[k] = (byCat[k] || 0) + toBYN(t.amount, t.currency);
+      });
+
+      const entries = Object.entries(byCat).sort((a, b) => b[1] - a[1]);
+      const donutEl = document.getElementById('donut-chart');
+
+      if (!entries.length || expTotal <= 0) {
+        donutEl.innerHTML = `
+          <div class="donut-ring" style="background: conic-gradient(rgba(148,163,184,0.22) 0deg 360deg);">
+            <div class="donut-hole">
+              <div class="muted">Расходы</div>
+              <div style="font-weight:800; font-size:15px;">0.00 BYN</div>
+            </div>
+          </div>
+          <div class="muted">Добавьте расход по категории, чтобы увидеть диаграмму</div>
+        `;
+        return;
+      }
+
+      let accDeg = 0;
+      const stops = entries.map(([, val], idx) => {
+        const deg = (val / expTotal) * 360;
+        const start = accDeg;
+        const end = start + deg;
+        accDeg = end;
+        const col = PALETTE[idx % PALETTE.length];
+        return `${col} ${start.toFixed(1)}deg ${end.toFixed(1)}deg`;
+      });
+
+      donutEl.innerHTML = `
+        <div class="donut-ring" style="background: conic-gradient(${stops.join(', ')});">
+          <div class="donut-hole">
+            <div class="muted">Потрачено</div>
+            <div style="font-weight:800; font-size:15px;">${fmt(expTotal)}</div>
+            <div class="muted">BYN</div>
+          </div>
+        </div>
+        <div style="width:100%;">
+          ${entries.map(([cat, val], idx) => {
+            const pct = Math.round((val / expTotal) * 100);
+            const col = PALETTE[idx % PALETTE.length];
+            return `
+              <div class="cat-breakdown-row">
+                <div><span class="color-dot" style="background:${col};"></span><strong>${esc(cat)}</strong> <span class="muted">${pct}%</span></div>
+                <strong style="color:#f87171;">${fmt(val)} BYN</strong>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
     }
 
+    /* Модальные окна и меню действий */
     function openModal(html) {
-      document.getElementById('modal-box').innerHTML = html;
+      document.getElementById('modal-content').innerHTML = html;
       document.getElementById('modal').classList.remove('hidden');
     }
 
@@ -938,17 +1328,771 @@
       document.getElementById('modal').classList.add('hidden');
     }
 
-    function closeModalOnBackdrop(e) {
+    function onBackdropClick(e) {
       if (e.target.id === 'modal') closeModal();
     }
 
+    function openQuickPlusMenu() {
+      openModal(`
+        <div style="font-weight:800; font-size:16px;">Быстрое действие</div>
+        <div class="muted">Выберите, что хотите записать</div>
+        <div class="sheet-grid">
+          <button class="btn btn-primary" onclick="closeModal(); openTxModal('expense')">- Расход</button>
+          <button class="btn" style="border-color:#10b981; color:#34d399;" onclick="closeModal(); openTxModal('income')">+ Доход</button>
+          <button class="btn btn-gold" onclick="closeModal(); openTransferModal()">⇄ Перевод</button>
+          <button class="btn" onclick="closeModal(); openSavingModal()">+ Сбережение</button>
+        </div>
+        <div class="modal-footer"><button class="btn" onclick="closeModal()">Закрыть</button></div>
+      `);
+    }
+
+    function walletOptionsHtml(selectedId = '') {
+      return state.wallets.map(w =>
+        `<option value="${esc(w.id)}" ${w.id === selectedId ? 'selected' : ''}>${esc(w.name)} (${fmt(w.balance)} ${esc(w.currency)})</option>`
+      ).join('');
+    }
+
+    function categoryOptionsHtml(selected = '') {
+      return state.categories.map(c =>
+        `<option value="${esc(c)}" ${c === selected ? 'selected' : ''}>${esc(c)}</option>`
+      ).join('');
+    }
+
+    /* Операции (доход / расход) */
+    function openTxModal(type = 'expense', preset = {}) {
+      const isInc = type === 'income';
+      const defCat = preset.category || state.categories[0] || 'Еда';
+      const defWallet = preset.walletId || (state.wallets[0] && state.wallets[0].id) || '';
+      openModal(`
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">
+          ${preset.editId ? 'Редактировать операцию' : (isInc ? '+ Новый доход' : '- Новый расход')}
+        </div>
+        <div class="field">
+          <label>Сумма</label>
+          <input id="tx-amt" type="number" step="0.01" value="${preset.amount ?? '20'}" />
+        </div>
+        <div class="field">
+          <label>${isInc ? 'Куда поступили деньги (счёт)' : 'Откуда списать (счёт)'}</label>
+          <select id="tx-wallet">${walletOptionsHtml(defWallet)}</select>
+        </div>
+        ${!isInc ? `
+        <div class="field">
+          <label>Категория расхода</label>
+          <select id="tx-cat">${categoryOptionsHtml(defCat)}</select>
+        </div>` : `
+        <div class="field">
+          <label>Источник дохода</label>
+          <input id="tx-src" value="${esc(preset.source || 'Доход')}" placeholder="Зарплата, заказ, премия..." />
+        </div>`}
+        <div class="field">
+          <label>Дата</label>
+          <input id="tx-date" type="date" value="${esc(preset.date || todayISO())}" />
+        </div>
+        <div class="field">
+          <label>Заметка (необязательно)</label>
+          <input id="tx-note" value="${esc(preset.note || '')}" placeholder="Комментарий" />
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveTx('${type}', '${esc(preset.editId || '')}')">Сохранить</button>
+        </div>
+      `);
+    }
+
+    function saveTx(type, editId) {
+      const amount = Math.abs(Number(document.getElementById('tx-amt').value) || 0);
+      if (amount <= 0) return;
+      const wallet = findWallet(document.getElementById('tx-wallet').value);
+      const date = document.getElementById('tx-date').value || todayISO();
+      const note = document.getElementById('tx-note').value.trim();
+
+      if (editId) {
+        revertTransactionEffect(editId);
+        state.transactions = state.transactions.filter(t => t.id !== editId);
+      }
+
+      const isInc = type === 'income';
+      const category = isInc ? 'Доход' : (document.getElementById('tx-cat').value || 'Прочее');
+      const title = isInc
+        ? (document.getElementById('tx-src').value.trim() || 'Доход')
+        : category;
+
+      if (wallet) {
+        wallet.balance = (Number(wallet.balance) || 0) + (isInc ? amount : -amount);
+      }
+
+      state.transactions.push({
+        id: editId || ('tx_' + Date.now()),
+        kind: type,
+        title,
+        category,
+        amount,
+        currency: wallet ? wallet.currency : 'BYN',
+        walletId: wallet ? wallet.id : null,
+        date,
+        note,
+        sub: `${wallet ? wallet.name : 'Счёт'}${!isInc ? ' • ' + category : ''}${note ? ' • ' + note : ''}`
+      });
+
+      closeModal();
+      persist();
+    }
+
+    function revertTransactionEffect(txId) {
+      const tx = state.transactions.find(t => t.id === txId);
+      if (!tx) return;
+      if (tx.kind === 'income' && tx.walletId) {
+        const w = findWallet(tx.walletId);
+        if (w) w.balance = (Number(w.balance) || 0) - (Number(tx.amount) || 0);
+      } else if (tx.kind === 'expense' && tx.walletId) {
+        const w = findWallet(tx.walletId);
+        if (w) w.balance = (Number(w.balance) || 0) + (Number(tx.amount) || 0);
+      } else if (tx.kind === 'transfer') {
+        const fromW = findWallet(tx.fromWalletId);
+        const toW = findWallet(tx.toWalletId);
+        if (fromW) fromW.balance = (Number(fromW.balance) || 0) + (Number(tx.amount) || 0);
+        if (toW) toW.balance = (Number(toW.balance) || 0) - (Number(tx.receivedAmount ?? tx.amount) || 0);
+      }
+    }
+
+    function openTxMenu(txId) {
+      const tx = state.transactions.find(t => t.id === txId);
+      if (!tx) return;
+      openModal(`
+        <div style="font-weight:800; font-size:16px;">${esc(tx.title)}</div>
+        <div class="muted" style="margin-top:4px;">${fmt(tx.amount)} ${esc(tx.currency || 'BYN')} • ${esc(tx.date)}</div>
+        <div class="sheet-grid">
+          ${tx.kind !== 'transfer' ? `<button class="btn" onclick="closeModal(); openTxModal('${tx.kind}', { editId:'${esc(tx.id)}', amount:${Number(tx.amount)}, walletId:'${esc(tx.walletId || '')}', category:'${esc(tx.category || '')}', source:'${esc(tx.title)}', date:'${esc(tx.date)}', note:'${esc(tx.note || '')}' })">Изменить</button>` : '<div></div>'}
+          <button class="btn btn-danger" onclick="deleteTx('${esc(tx.id)}')">Удалить</button>
+        </div>
+        <div class="modal-footer"><button class="btn" onclick="closeModal()">Закрыть</button></div>
+      `);
+    }
+
+    function deleteTx(txId) {
+      revertTransactionEffect(txId);
+      state.transactions = state.transactions.filter(t => t.id !== txId);
+      closeModal();
+      persist();
+    }
+
+    /* Счета и переводы с конвертацией */
+    function openWalletModal(editId = '') {
+      const existing = editId ? findWallet(editId) : null;
+      openModal(`
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">${existing ? 'Изменить счёт' : 'Новый счёт'}</div>
+        <div class="field"><label>Название</label><input id="w-name" value="${esc(existing ? existing.name : '')}" placeholder="Карта, Наличные, Валютный счёт" /></div>
+        <div class="field"><label>Валюта</label>
+          <select id="w-cur">
+            ${['BYN', 'USD', 'EUR', 'RUB'].map(c => `<option value="${c}" ${(existing && existing.currency === c) ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Баланс</label><input id="w-bal" type="number" step="0.01" value="${existing ? Number(existing.balance) : 0}" /></div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveWallet('${esc(editId)}')">Сохранить</button>
+        </div>
+      `);
+    }
+
+    function saveWallet(editId) {
+      const name = document.getElementById('w-name').value.trim() || 'Счёт';
+      const currency = document.getElementById('w-cur').value;
+      const balance = Number(document.getElementById('w-bal').value) || 0;
+      if (editId) {
+        const w = findWallet(editId);
+        if (w) { w.name = name; w.currency = currency; w.balance = balance; }
+      } else {
+        state.wallets.push({ id: 'w_' + Date.now(), name, currency, balance });
+      }
+      closeModal();
+      persist();
+    }
+
+    function openWalletMenu(wId) {
+      const w = findWallet(wId);
+      if (!w) return;
+      openModal(`
+        <div style="font-weight:800; font-size:16px;">${esc(w.name)} (${fmt(w.balance)} ${esc(w.currency)})</div>
+        <div class="muted">Выберите действие со счётом</div>
+        <div class="sheet-grid">
+          <button class="btn btn-gold" onclick="closeModal(); openTransferModal('${esc(w.id)}')">Перевести</button>
+          <button class="btn btn-primary" onclick="closeModal(); openTxModal('income', { walletId:'${esc(w.id)}' })">+ Доход</button>
+          <button class="btn" onclick="closeModal(); openTxModal('expense', { walletId:'${esc(w.id)}' })">- Расход</button>
+          <button class="btn" onclick="closeModal(); openWalletModal('${esc(w.id)}')">Изменить</button>
+        </div>
+        ${state.wallets.length > 1 ? `<div style="margin-top:8px;"><button class="btn btn-danger" style="width:100%;" onclick="deleteWallet('${esc(w.id)}')">Удалить счёт</button></div>` : ''}
+        <div class="modal-footer"><button class="btn" onclick="closeModal()">Закрыть</button></div>
+      `);
+    }
+
+    function deleteWallet(wId) {
+      if (state.wallets.length <= 1) return;
+      state.wallets = state.wallets.filter(w => w.id !== wId);
+      closeModal();
+      persist();
+    }
+
+    function openTransferModal(fromId = '') {
+      const fromW = findWallet(fromId) || state.wallets[0];
+      const toW = state.wallets.find(w => w.id !== (fromW && fromW.id)) || state.wallets[0];
+      openModal(`
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">Перевод между счетами</div>
+        <div class="field"><label>Откуда списать</label><select id="tr-from" onchange="syncConverted()">${walletOptionsHtml(fromW && fromW.id)}</select></div>
+        <div class="field"><label>Куда зачислить</label><select id="tr-to" onchange="syncConverted()">${walletOptionsHtml(toW && toW.id)}</select></div>
+        <div class="field"><label>Сумма списания</label><input id="tr-amt" type="number" step="0.01" value="50" oninput="syncConverted()" /></div>
+        <div class="field"><label>Сумма зачисления (с учётом конвертации)</label><input id="tr-recv" type="number" step="0.01" value="50" /></div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveTransfer()">Перевести</button>
+        </div>
+      `);
+      syncConverted();
+    }
+
+    function syncConverted() {
+      const fromW = findWallet(document.getElementById('tr-from').value);
+      const toW = findWallet(document.getElementById('tr-to').value);
+      const amt = Number(document.getElementById('tr-amt').value) || 0;
+      if (!fromW || !toW) return;
+      const byn = toBYN(amt, fromW.currency);
+      const conv = fromBYN(byn, toW.currency);
+      document.getElementById('tr-recv').value = conv.toFixed(2);
+    }
+
+    function saveTransfer() {
+      const fromW = findWallet(document.getElementById('tr-from').value);
+      const toW = findWallet(document.getElementById('tr-to').value);
+      const amt = Math.abs(Number(document.getElementById('tr-amt').value) || 0);
+      const recv = Math.abs(Number(document.getElementById('tr-recv').value) || amt);
+      if (!fromW || !toW || amt <= 0) return;
+
+      fromW.balance = (Number(fromW.balance) || 0) - amt;
+      toW.balance = (Number(toW.balance) || 0) + recv;
+
+      state.transactions.push({
+        id: 'tr_' + Date.now(),
+        kind: 'transfer',
+        title: `${fromW.name} → ${toW.name}`,
+        amount: amt,
+        receivedAmount: recv,
+        currency: fromW.currency,
+        fromWalletId: fromW.id,
+        toWalletId: toW.id,
+        date: todayISO(),
+        sub: `Зачислено ${fmt(recv)} ${toW.currency}`
+      });
+
+      closeModal();
+      persist();
+    }
+
+    /* Сбережения с выбором кошелька списания */
+    function openSavingModal(editId = '') {
+      const existing = editId ? findSaving(editId) : null;
+      openModal(`
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">${existing ? 'Изменить сбережение' : 'Новое сбережение'}</div>
+        <div class="field"><label>Название</label><input id="s-name" value="${esc(existing ? existing.name : '')}" placeholder="Авто, Отпуск, Подушка" /></div>
+        <div class="field"><label>Валюта</label>
+          <select id="s-cur">
+            ${['BYN', 'USD', 'EUR', 'RUB'].map(c => `<option value="${c}" ${(existing && existing.currency === c) ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Цель накопления (необязательно)</label><input id="s-target" type="number" step="0.01" value="${existing ? Number(existing.target || 0) : 0}" /></div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveSaving('${esc(editId)}')">Сохранить</button>
+        </div>
+      `);
+    }
+
+    function saveSaving(editId) {
+      const name = document.getElementById('s-name').value.trim() || 'Сбережение';
+      const currency = document.getElementById('s-cur').value;
+      const target = Math.max(0, Number(document.getElementById('s-target').value) || 0);
+      if (editId) {
+        const s = findSaving(editId);
+        if (s) { s.name = name; s.currency = currency; s.target = target; }
+      } else {
+        state.savings.push({ id: 's_' + Date.now(), name, currency, saved: 0, target });
+      }
+      closeModal();
+      persist();
+    }
+
+    function openSavingMenu(sId) {
+      const s = findSaving(sId);
+      if (!s) return;
+      openModal(`
+        <div style="font-weight:800; font-size:16px;">${esc(s.name)} (${fmt(s.saved)} ${esc(s.currency)})</div>
+        <div class="sheet-grid">
+          <button class="btn btn-primary" onclick="closeModal(); openSavingTopup('${esc(s.id)}', 'in')">+ Пополнить со счёта</button>
+          <button class="btn" onclick="closeModal(); openSavingTopup('${esc(s.id)}', 'out')">- Снять на счёт</button>
+          <button class="btn" onclick="closeModal(); openSavingModal('${esc(s.id)}')">Изменить</button>
+          <button class="btn btn-danger" onclick="deleteSaving('${esc(s.id)}')">Удалить</button>
+        </div>
+        <div class="modal-footer"><button class="btn" onclick="closeModal()">Закрыть</button></div>
+      `);
+    }
+
+    function openSavingTopup(sId, dir) {
+      const s = findSaving(sId);
+      if (!s) return;
+      openModal(`
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">
+          ${dir === 'in' ? 'Пополнить сбережение' : 'Снять со сбережения'}: ${esc(s.name)}
+        </div>
+        <div class="field">
+          <label>${dir === 'in' ? 'С какого кошелька списать' : 'На какой кошелёк зачислить'}</label>
+          <select id="st-wallet">${walletOptionsHtml()}</select>
+        </div>
+        <div class="field">
+          <label>Сумма (в валюте сбережения: ${esc(s.currency)})</label>
+          <input id="st-amt" type="number" step="0.01" value="50" />
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="applySavingTopup('${esc(s.id)}', '${dir}')">Подтвердить</button>
+        </div>
+      `);
+    }
+
+    function applySavingTopup(sId, dir) {
+      const s = findSaving(sId);
+      const w = findWallet(document.getElementById('st-wallet').value);
+      const amt = Math.abs(Number(document.getElementById('st-amt').value) || 0);
+      if (!s || !w || amt <= 0) return;
+
+      const byn = toBYN(amt, s.currency);
+      const inWalletCur = fromBYN(byn, w.currency);
+
+      if (dir === 'in') {
+        w.balance = (Number(w.balance) || 0) - inWalletCur;
+        s.saved = (Number(s.saved) || 0) + amt;
+      } else {
+        s.saved = Math.max(0, (Number(s.saved) || 0) - amt);
+        w.balance = (Number(w.balance) || 0) + inWalletCur;
+      }
+
+      closeModal();
+      persist();
+    }
+
+    function deleteSaving(sId) {
+      state.savings = state.savings.filter(s => s.id !== sId);
+      closeModal();
+      persist();
+    }
+
+    /* Категории (добавление, редактирование, удаление) */
+    function openCategoriesManager() {
+      openModal(`
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">Категории расходов</div>
+        <div class="field">
+          <label>Добавить новую категорию</label>
+          <div style="display:flex; gap:6px;">
+            <input id="new-cat-name" placeholder="Например: Дом или Связь" />
+            <button class="btn btn-primary btn-sm" onclick="addCategory()">Добавить</button>
+          </div>
+        </div>
+        <div>
+          ${state.categories.map((c, idx) => `
+            <div class="list-item" style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+              <strong>${esc(c)}</strong>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-sm" onclick="renameCategory(${idx})">Правка</button>
+                <button class="btn btn-danger btn-sm" onclick="removeCategory(${idx})">Удалить</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="modal-footer"><button class="btn" onclick="closeModal()">Готово</button></div>
+      `);
+    }
+
+    function addCategory() {
+      const name = document.getElementById('new-cat-name').value.trim();
+      if (!name || state.categories.includes(name)) return;
+      state.categories.push(name);
+      persist();
+      openCategoriesManager();
+    }
+
+    function renameCategory(idx) {
+      const oldName = state.categories[idx];
+      const next = prompt('Новое название категории:', oldName);
+      if (!next || !next.trim()) return;
+      state.categories[idx] = next.trim();
+      persist();
+      openCategoriesManager();
+    }
+
+    function removeCategory(idx) {
+      if (state.categories.length <= 1) return;
+      state.categories.splice(idx, 1);
+      persist();
+      openCategoriesManager();
+    }
+
+    /* Регулярные платежи */
+    function openRecurringModal(editId = '') {
+      const ex = editId ? state.recurring.find(r => r.id === editId) : null;
+      openModal(`
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">${ex ? 'Изменить платёж' : 'Новый регулярный платёж'}</div>
+        <div class="field"><label>Название</label><input id="rc-title" value="${esc(ex ? ex.title : '')}" placeholder="Связь, Интернет, Аренда" /></div>
+        <div class="field"><label>Сумма</label><input id="rc-amt" type="number" step="0.01" value="${ex ? Number(ex.amount) : 25}" /></div>
+        <div class="field"><label>Категория</label><select id="rc-cat">${categoryOptionsHtml(ex && ex.category)}</select></div>
+        <div class="field"><label>Счёт списания по умолчанию</label><select id="rc-w">${walletOptionsHtml(ex && ex.walletId)}</select></div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveRecurring('${esc(editId)}')">Сохранить</button>
+        </div>
+      `);
+    }
+
+    function saveRecurring(editId) {
+      const title = document.getElementById('rc-title').value.trim() || 'Платёж';
+      const amount = Math.abs(Number(document.getElementById('rc-amt').value) || 0);
+      const category = document.getElementById('rc-cat').value;
+      const walletId = document.getElementById('rc-w').value;
+      if (amount <= 0) return;
+
+      if (editId) {
+        const r = state.recurring.find(x => x.id === editId);
+        if (r) { r.title = title; r.amount = amount; r.category = category; r.walletId = walletId; }
+      } else {
+        state.recurring.push({ id: 'rc_' + Date.now(), title, amount, category, walletId, currency: 'BYN' });
+      }
+      closeModal();
+      persist();
+    }
+
+    function openRecurringMenu(rcId) {
+      const r = state.recurring.find(x => x.id === rcId);
+      if (!r) return;
+      openModal(`
+        <div style="font-weight:800; font-size:16px;">${esc(r.title)}</div>
+        <div class="muted" style="margin-top:4px;">Платёж: ${fmt(r.amount)} ${esc(r.currency || 'BYN')}</div>
+        <div class="field" style="margin-top:10px;">
+          <label>Выберите кошелёк для списания</label>
+          <select id="rc-pay-w">${walletOptionsHtml(r.walletId)}</select>
+        </div>
+        <div class="field">
+          <label>Сумма списания</label>
+          <input id="rc-pay-amt" type="number" step="0.01" value="${Number(r.amount)}" />
+        </div>
+        <div class="sheet-grid">
+          <button class="btn btn-primary" onclick="payRecurring('${esc(r.id)}')">Списать сейчас</button>
+          <button class="btn" onclick="closeModal(); openRecurringModal('${esc(r.id)}')">Изменить</button>
+        </div>
+        <div style="margin-top:8px;"><button class="btn btn-danger" style="width:100%;" onclick="deleteRecurring('${esc(r.id)}')">Удалить платёж</button></div>
+        <div class="modal-footer"><button class="btn" onclick="closeModal()">Закрыть</button></div>
+      `);
+    }
+
+    function payRecurring(rcId) {
+      const r = state.recurring.find(x => x.id === rcId);
+      const w = findWallet(document.getElementById('rc-pay-w').value);
+      const amt = Math.abs(Number(document.getElementById('rc-pay-amt').value) || 0);
+      if (!r || !w || amt <= 0) return;
+
+      w.balance = (Number(w.balance) || 0) - amt;
+      state.transactions.push({
+        id: 'tx_' + Date.now(),
+        kind: 'expense',
+        title: r.title,
+        category: r.category || 'Прочее',
+        amount: amt,
+        currency: w.currency,
+        walletId: w.id,
+        date: todayISO(),
+        sub: `Регулярный платёж • ${w.name}`
+      });
+
+      closeModal();
+      persist();
+    }
+
+    function deleteRecurring(rcId) {
+      state.recurring = state.recurring.filter(x => x.id !== rcId);
+      closeModal();
+      persist();
+    }
+
+    /* Кредиты с выбором способа погашения */
+    function openCreditModal(editId = '') {
+      const c = editId ? state.credits.find(x => x.id === editId) : null;
+      openModal(`
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">${c ? 'Изменить кредит' : 'Новый кредит'}</div>
+        <div class="field"><label>Название кредита / банк</label><input id="cr-name" value="${esc(c ? c.name : '')}" placeholder="Потребительский, Автокредит" /></div>
+        <div class="field"><label>Остаток долга</label><input id="cr-rem" type="number" step="0.01" value="${c ? Number(c.remaining) : 1500}" /></div>
+        <div class="field"><label>Платёж по графику</label><input id="cr-pay" type="number" step="0.01" value="${c ? Number(c.monthlyPayment) : 150}" /></div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveCredit('${esc(editId)}')">Сохранить</button>
+        </div>
+      `);
+    }
+
+    function saveCredit(editId) {
+      const name = document.getElementById('cr-name').value.trim() || 'Кредит';
+      const remaining = Math.max(0, Number(document.getElementById('cr-rem').value) || 0);
+      const monthlyPayment = Math.max(0, Number(document.getElementById('cr-pay').value) || 0);
+      if (editId) {
+        const c = state.credits.find(x => x.id === editId);
+        if (c) { c.name = name; c.remaining = remaining; c.monthlyPayment = monthlyPayment; }
+      } else {
+        state.credits.push({ id: 'cr_' + Date.now(), name, remaining, monthlyPayment, currency: 'BYN' });
+      }
+      closeModal();
+      persist();
+    }
+
+    function openCreditMenu(crId) {
+      const c = state.credits.find(x => x.id === crId);
+      if (!c) return;
+      openModal(`
+        <div style="font-weight:800; font-size:16px;">${esc(c.name)}</div>
+        <div class="muted" style="margin-top:4px;">Остаток: ${fmt(c.remaining)} ${esc(c.currency || 'BYN')}</div>
+        <div class="field" style="margin-top:10px;">
+          <label>Сумма погашения</label>
+          <input id="cr-p-amt" type="number" step="0.01" value="${Number(c.monthlyPayment || 50)}" />
+        </div>
+        <div class="field">
+          <label>Способ погашения платежа</label>
+          <select id="cr-p-method">
+            ${state.wallets.map(w => `<option value="wallet:${esc(w.id)}">Списать со счёта: ${esc(w.name)} (${fmt(w.balance)} ${esc(w.currency)})</option>`).join('')}
+            <option value="external">Отметить внешний платёж (без списания со счёта)</option>
+          </select>
+        </div>
+        <div class="sheet-grid">
+          <button class="btn btn-primary" onclick="payCredit('${esc(c.id)}')">Погасить платёж</button>
+          <button class="btn" onclick="closeModal(); openCreditModal('${esc(c.id)}')">Изменить</button>
+        </div>
+        <div style="margin-top:8px;"><button class="btn btn-danger" style="width:100%;" onclick="deleteCredit('${esc(c.id)}')">Удалить кредит</button></div>
+        <div class="modal-footer"><button class="btn" onclick="closeModal()">Закрыть</button></div>
+      `);
+    }
+
+    function payCredit(crId) {
+      const c = state.credits.find(x => x.id === crId);
+      const amt = Math.abs(Number(document.getElementById('cr-p-amt').value) || 0);
+      const method = document.getElementById('cr-p-method').value;
+      if (!c || amt <= 0) return;
+
+      c.remaining = Math.max(0, (Number(c.remaining) || 0) - amt);
+
+      if (method.startsWith('wallet:')) {
+        const wId = method.slice(7);
+        const w = findWallet(wId);
+        if (w) w.balance = (Number(w.balance) || 0) - amt;
+        state.transactions.push({
+          id: 'tx_' + Date.now(),
+          kind: 'expense',
+          title: `Кредит: ${c.name}`,
+          category: 'Кредит',
+          amount: amt,
+          currency: w ? w.currency : 'BYN',
+          walletId: w ? w.id : null,
+          date: todayISO(),
+          sub: `Погашение со счёта ${w ? w.name : ''}`
+        });
+      }
+
+      closeModal();
+      persist();
+    }
+
+    function deleteCredit(crId) {
+      state.credits = state.credits.filter(x => x.id !== crId);
+      closeModal();
+      persist();
+    }
+
+    /* Долги (мне должны / я должен) */
+    function openDebtModal(editId = '') {
+      const d = editId ? state.debts.find(x => x.id === editId) : null;
+      openModal(`
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">${d ? 'Изменить долг' : 'Новый долг'}</div>
+        <div class="field"><label>Кто</label><input id="db-person" value="${esc(d ? d.person : '')}" placeholder="Имя или контакт" /></div>
+        <div class="field"><label>Направление</label>
+          <select id="db-dir">
+            <option value="owe_me" ${(!d || d.direction === 'owe_me') ? 'selected' : ''}>Мне должны (я даю в долг)</option>
+            <option value="i_owe" ${(d && d.direction === 'i_owe') ? 'selected' : ''}>Я должен (я беру в долг)</option>
+          </select>
+        </div>
+        <div class="field"><label>Сумма</label><input id="db-amt" type="number" step="0.01" value="${d ? Number(d.amount) : 100}" /></div>
+        <div class="field"><label>Кошелёк для списания / зачисления</label><select id="db-w">${walletOptionsHtml()}</select></div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveDebt('${esc(editId)}')">Сохранить</button>
+        </div>
+      `);
+    }
+
+    function saveDebt(editId) {
+      const person = document.getElementById('db-person').value.trim() || 'Контакт';
+      const direction = document.getElementById('db-dir').value;
+      const amount = Math.abs(Number(document.getElementById('db-amt').value) || 0);
+      const w = findWallet(document.getElementById('db-w').value);
+      if (amount <= 0) return;
+
+      if (!editId && w) {
+        // Если я даю в долг ("мне должны") — списываем со счёта; если беру в долг ("я должен") — зачисляем на счёт
+        w.balance = (Number(w.balance) || 0) + (direction === 'i_owe' ? amount : -amount);
+      }
+
+      if (editId) {
+        const d = state.debts.find(x => x.id === editId);
+        if (d) { d.person = person; d.direction = direction; d.amount = amount; }
+      } else {
+        state.debts.push({ id: 'db_' + Date.now(), person, direction, amount, currency: w ? w.currency : 'BYN' });
+      }
+
+      closeModal();
+      persist();
+    }
+
+    function openDebtMenu(dbId) {
+      const d = state.debts.find(x => x.id === dbId);
+      if (!d) return;
+      const isOweMe = d.direction === 'owe_me';
+      openModal(`
+        <div style="font-weight:800; font-size:16px;">${esc(d.person)} (${isOweMe ? 'Мне должны' : 'Я должен'})</div>
+        <div class="muted" style="margin-top:4px;">Остаток долга: ${fmt(d.amount)} ${esc(d.currency || 'BYN')}</div>
+        <div class="field" style="margin-top:10px;">
+          <label>Сумма возврата / погашения</label>
+          <input id="db-settle-amt" type="number" step="0.01" value="${Number(d.amount)}" />
+        </div>
+        <div class="field">
+          <label>${isOweMe ? 'На какой кошелёк вернули деньги' : 'С какого кошелька отдаёте долг'}</label>
+          <select id="db-settle-w">${walletOptionsHtml()}</select>
+        </div>
+        <div class="sheet-grid">
+          <button class="btn btn-primary" onclick="settleDebt('${esc(d.id)}')">${isOweMe ? 'Вернули мне' : 'Я отдал'}</button>
+          <button class="btn btn-danger" onclick="deleteDebt('${esc(d.id)}')">Удалить</button>
+        </div>
+        <div class="modal-footer"><button class="btn" onclick="closeModal()">Закрыть</button></div>
+      `);
+    }
+
+    function settleDebt(dbId) {
+      const d = state.debts.find(x => x.id === dbId);
+      const amt = Math.abs(Number(document.getElementById('db-settle-amt').value) || 0);
+      const w = findWallet(document.getElementById('db-settle-w').value);
+      if (!d || amt <= 0) return;
+
+      const settled = Math.min(Number(d.amount) || 0, amt);
+      d.amount = Math.max(0, (Number(d.amount) || 0) - settled);
+
+      if (w) {
+        // Если мне вернули долг — на кошелёк прибавляется; если я отдал долг — с кошелька списывается
+        w.balance = (Number(w.balance) || 0) + (d.direction === 'owe_me' ? settled : -settled);
+      }
+
+      if (d.amount === 0) {
+        state.debts = state.debts.filter(x => x.id !== dbId);
+      }
+
+      closeModal();
+      persist();
+    }
+
+    function deleteDebt(dbId) {
+      state.debts = state.debts.filter(x => x.id !== dbId);
+      closeModal();
+      persist();
+    }
+
+    /* Проекты */
+    function openProjectModal(editId = '') {
+      const p = editId ? state.projects.find(x => x.id === editId) : null;
+      openModal(`
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">${p ? 'Изменить проект' : 'Новый проект / дело'}</div>
+        <div class="field"><label>Название</label><input id="pr-name" value="${esc(p ? p.name : '')}" placeholder="Ремонт, Заказ, Поездка" /></div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveProject('${esc(editId)}')">Сохранить</button>
+        </div>
+      `);
+    }
+
+    function saveProject(editId) {
+      const name = document.getElementById('pr-name').value.trim() || 'Проект';
+      if (editId) {
+        const p = state.projects.find(x => x.id === editId);
+        if (p) p.name = name;
+      } else {
+        state.projects.push({ id: 'pr_' + Date.now(), name, income: 0, expense: 0 });
+      }
+      closeModal();
+      persist();
+    }
+
+    function openProjectMenu(prId) {
+      const p = state.projects.find(x => x.id === prId);
+      if (!p) return;
+      openModal(`
+        <div style="font-weight:800; font-size:16px;">${esc(p.name)}</div>
+        <div class="muted" style="margin-top:4px;">Приход: +${fmt(p.income)} BYN • Расход: -${fmt(p.expense)} BYN</div>
+        <div class="field" style="margin-top:10px;">
+          <label>Сумма по проекту</label>
+          <input id="pr-amt" type="number" step="0.01" value="100" />
+        </div>
+        <div class="field">
+          <label>Кошелёк</label>
+          <select id="pr-w">${walletOptionsHtml()}</select>
+        </div>
+        <div class="sheet-grid">
+          <button class="btn btn-primary" onclick="moveProjectFunds('${esc(p.id)}', 'income')">+ Приход в проект</button>
+          <button class="btn" onclick="moveProjectFunds('${esc(p.id)}', 'expense')">- Расход проекта</button>
+          <button class="btn" onclick="closeModal(); openProjectModal('${esc(p.id)}')">Изменить</button>
+          <button class="btn btn-danger" onclick="deleteProject('${esc(p.id)}')">Удалить</button>
+        </div>
+        <div class="modal-footer"><button class="btn" onclick="closeModal()">Закрыть</button></div>
+      `);
+    }
+
+    function moveProjectFunds(prId, kind) {
+      const p = state.projects.find(x => x.id === prId);
+      const w = findWallet(document.getElementById('pr-w').value);
+      const amt = Math.abs(Number(document.getElementById('pr-amt').value) || 0);
+      if (!p || !w || amt <= 0) return;
+
+      const isInc = kind === 'income';
+      p[kind] = (Number(p[kind]) || 0) + amt;
+      w.balance = (Number(w.balance) || 0) + (isInc ? amt : -amt);
+
+      state.transactions.push({
+        id: 'tx_' + Date.now(),
+        kind,
+        title: `${p.name} (${isInc ? 'приход' : 'расход'})`,
+        category: p.name,
+        amount: amt,
+        currency: w.currency,
+        walletId: w.id,
+        date: todayISO(),
+        sub: `Проект • ${w.name}`
+      });
+
+      closeModal();
+      persist();
+    }
+
+    function deleteProject(prId) {
+      state.projects = state.projects.filter(x => x.id !== prId);
+      closeModal();
+      persist();
+    }
+
+    /* Курсы и резервная копия */
     function openRatesModal() {
       openModal(`
-        <div style="font-weight:700; margin-bottom:10px;">Курсы к BYN</div>
+        <div style="font-weight:800; font-size:16px; margin-bottom:10px;">Курсы валют к BYN</div>
         <div class="field"><label>1 USD в BYN</label><input id="r-usd" type="number" step="0.0001" value="${state.rates.USD}" /></div>
         <div class="field"><label>1 EUR в BYN</label><input id="r-eur" type="number" step="0.0001" value="${state.rates.EUR}" /></div>
         <div class="field"><label>1 RUB в BYN</label><input id="r-rub" type="number" step="0.0001" value="${state.rates.RUB}" /></div>
-        <div class="modal-actions">
+        <div class="modal-footer">
           <button class="btn" onclick="closeModal()">Отмена</button>
           <button class="btn btn-primary" onclick="saveRates()">Сохранить</button>
         </div>
@@ -960,175 +2104,50 @@
       state.rates.EUR = Number(document.getElementById('r-eur').value) || 3.55;
       state.rates.RUB = Number(document.getElementById('r-rub').value) || 0.035;
       closeModal();
-      saveState();
+      persist();
     }
 
-    function openWalletModal() {
+    function openBackupModal() {
+      const dump = JSON.stringify(state);
       openModal(`
-        <div style="font-weight:700; margin-bottom:10px;">Новый кошелёк</div>
-        <div class="field"><label>Название</label><input id="w-name" placeholder="Например: Копилка" /></div>
-        <div class="field"><label>Валюта</label>
-          <select id="w-cur">
-            <option value="BYN">BYN</option>
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="RUB">RUB</option>
-          </select>
+        <div style="font-weight:800; font-size:16px; margin-bottom:8px;">Резервная копия данных</div>
+        <div class="muted" style="margin-bottom:8px;">Скопируйте текст для сохранения или вставьте сохранённую копию для восстановления:</div>
+        <div class="field"><textarea id="bk-area" rows="5">${esc(dump)}</textarea></div>
+        <div class="sheet-grid">
+          <button class="btn" onclick="copyBackup()">Копировать код</button>
+          <button class="btn btn-primary" onclick="restoreBackup()">Восстановить</button>
         </div>
-        <div class="field"><label>Начальный баланс</label><input id="w-bal" type="number" step="0.01" value="0" /></div>
-        <div class="modal-actions">
-          <button class="btn" onclick="closeModal()">Отмена</button>
-          <button class="btn btn-primary" onclick="saveWallet()">Создать</button>
-        </div>
+        <div class="modal-footer"><button class="btn" onclick="closeModal()">Закрыть</button></div>
       `);
     }
 
-    function saveWallet() {
-      const name = document.getElementById('w-name').value.trim() || 'Кошелёк';
-      const currency = document.getElementById('w-cur').value;
-      const balance = Number(document.getElementById('w-bal').value) || 0;
-      state.wallets.push({ id: 'w_' + Date.now(), name, currency, balance });
-      closeModal();
-      saveState();
+    function copyBackup() {
+      const ta = document.getElementById('bk-area');
+      if (!ta) return;
+      ta.select();
+      try { navigator.clipboard.writeText(ta.value); } catch {}
     }
 
-    function openGoalModal() {
-      openModal(`
-        <div style="font-weight:700; margin-bottom:10px;">Новая цель накопления</div>
-        <div class="field"><label>Название цели</label><input id="g-name" placeholder="Например: Авто" /></div>
-        <div class="field"><label>Сумма цели (BYN)</label><input id="g-target" type="number" step="0.01" value="1000" /></div>
-        <div class="modal-actions">
-          <button class="btn" onclick="closeModal()">Отмена</button>
-          <button class="btn btn-primary" onclick="saveGoal()">Сохранить</button>
-        </div>
-      `);
+    function restoreBackup() {
+      const ta = document.getElementById('bk-area');
+      if (!ta) return;
+      try {
+        const parsed = JSON.parse(ta.value);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        state = loadState();
+        closeModal();
+        render();
+      } catch {}
     }
 
-    function saveGoal() {
-      const name = document.getElementById('g-name').value.trim() || 'Цель';
-      const target = Math.max(1, Number(document.getElementById('g-target').value) || 100);
-      state.goals.push({ id: 'g_' + Date.now(), name, target, saved: 0 });
-      closeModal();
-      saveState();
-    }
-
-    function addGoalFunds(goalId) {
-      const g = state.goals.find(x => x.id === goalId);
-      if (!g) return;
-      g.saved = (Number(g.saved) || 0) + 50;
-      saveState();
-    }
-
-    function openTxModal(type = 'expense', recurring = false) {
-      const today = toLocalIsoDate(new Date());
-      openModal(`
-        <div style="font-weight:700; margin-bottom:10px;">${recurring ? 'Регулярный платёж' : (type === 'income' ? 'Новый доход' : 'Новый расход')}</div>
-        <div class="field"><label>Категория</label><input id="t-cat" placeholder="${type === 'income' ? 'Зарплата / Подработка' : 'Продукты / Хозяйство'}" /></div>
-        <div class="field"><label>Сумма (BYN)</label><input id="t-amt" type="number" step="0.01" value="10" /></div>
-        <div class="field"><label>Дата</label><input id="t-date" type="date" value="${today}" /></div>
-        <div class="field"><label>Заметка</label><input id="t-note" placeholder="Необязательно" /></div>
-        <div class="modal-actions">
-          <button class="btn" onclick="closeModal()">Отмена</button>
-          <button class="btn btn-primary" onclick="saveTx('${type}', ${recurring})">Добавить</button>
-        </div>
-      `);
-    }
-
-    function saveTx(type, recurring) {
-      const category = document.getElementById('t-cat').value.trim() || (type === 'income' ? 'Доход' : 'Расход');
-      const amount = Math.abs(Number(document.getElementById('t-amt').value) || 0);
-      const date = document.getElementById('t-date').value || toLocalIsoDate(new Date());
-      const note = document.getElementById('t-note').value.trim();
-
-      state.transactions.push({
-        id: 't_' + Date.now(),
-        type,
-        category,
-        amount,
-        date,
-        note,
-        recurring
-      });
-
-      if (state.wallets[0]) {
-        const delta = type === 'income' ? amount : -amount;
-        state.wallets[0].balance = (Number(state.wallets[0].balance) || 0) + delta;
-      }
-
-      closeModal();
-      saveState();
-    }
-
-    function openProjectModal() {
-      openModal(`
-        <div style="font-weight:700; margin-bottom:10px;">Новый проект / дело</div>
-        <div class="field"><label>Название</label><input id="p-name" placeholder="Например: Ремонт / Заказ" /></div>
-        <div class="field"><label>Бюджет (BYN)</label><input id="p-bud" type="number" step="0.01" value="200" /></div>
-        <div class="field"><label>Описание</label><input id="p-note" placeholder="Детали" /></div>
-        <div class="modal-actions">
-          <button class="btn" onclick="closeModal()">Отмена</button>
-          <button class="btn btn-primary" onclick="saveProject()">Сохранить</button>
-        </div>
-      `);
-    }
-
-    function saveProject() {
-      const name = document.getElementById('p-name').value.trim() || 'Проект';
-      const budget = Number(document.getElementById('p-bud').value) || 0;
-      const note = document.getElementById('p-note').value.trim();
-      state.projects.push({ id: 'p_' + Date.now(), name, budget, note });
-      closeModal();
-      saveState();
-    }
-
-    function openDebtModal() {
-      openModal(`
-        <div style="font-weight:700; margin-bottom:10px;">Новый долг</div>
-        <div class="field"><label>Кто</label><input id="d-person" placeholder="Имя" /></div>
-        <div class="field"><label>Тип</label>
-          <select id="d-kind">
-            <option value="owe_me">Мне должны</option>
-            <option value="i_owe">Я должен</option>
-          </select>
-        </div>
-        <div class="field"><label>Сумма (BYN)</label><input id="d-amt" type="number" step="0.01" value="50" /></div>
-        <div class="modal-actions">
-          <button class="btn" onclick="closeModal()">Отмена</button>
-          <button class="btn btn-primary" onclick="saveDebt()">Сохранить</button>
-        </div>
-      `);
-    }
-
-    function saveDebt() {
-      const person = document.getElementById('d-person').value.trim() || 'Контакт';
-      const kind = document.getElementById('d-kind').value;
-      const amount = Number(document.getElementById('d-amt').value) || 0;
-      state.debts.push({ id: 'd_' + Date.now(), person, kind, amount });
-      closeModal();
-      saveState();
-    }
-
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function hideSplash() {
+    function dismissSplash() {
       const sp = document.getElementById('splash-screen');
       if (sp) sp.classList.add('hide');
     }
 
-    try {
-      renderAll();
-    } catch {}
-
-    setTimeout(hideSplash, 1200);
-    window.addEventListener('load', () => setTimeout(hideSplash, 1200));
+    try { render(); } catch {}
+    setTimeout(dismissSplash, 1100);
+    window.addEventListener('load', () => setTimeout(dismissSplash, 1100));
   </script>
 </body>
 </html>
-  
