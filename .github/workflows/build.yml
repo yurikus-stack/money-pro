@@ -39,228 +39,228 @@ jobs:
           fi
           npx cap copy android
 
-      - name: Set app name to Money and disable default splash screen
+      - name: Set app name to Money and clean theme
         run: |
-          if [ -f android/app/src/main/res/values/strings.xml ]; then
-            python3 -c '
-import xml.etree.ElementTree as ET
-path = "android/app/src/main/res/values/strings.xml"
-tree = ET.parse(path)
-root = tree.getroot()
-for elem in root.findall("string"):
-    if elem.get("name") in ("app_name", "title_activity", "custom_url_scheme"):
-        if elem.get("name") == "app_name":
-            elem.text = "Money"
-tree.write(path, encoding="utf-8", xml_declaration=True)
-'
-          fi
+          cat <<'PY' > update_strings.py
+          import xml.etree.ElementTree as ET
 
-          if [ -f android/app/src/main/res/values/styles.xml ]; then
-            python3 -c '
-path = "android/app/src/main/res/values/styles.xml"
-with open(path, "r", encoding="utf-8") as f:
-    txt = f.read()
-txt = txt.replace("Theme.AppCompat.DayNight.NoActionBar", "Theme.AppCompat.NoActionBar")
-with open(path, "w", encoding="utf-8") as f:
-    f.write(txt)
-'
-          fi
+          strings_path = "android/app/src/main/res/values/strings.xml"
+          try:
+              tree = ET.parse(strings_path)
+              root = tree.getroot()
+              for elem in root.findall("string"):
+                  if elem.get("name") == "app_name":
+                      elem.text = "Money"
+              tree.write(strings_path, encoding="utf-8", xml_declaration=True)
+          except Exception:
+              pass
+
+          styles_path = "android/app/src/main/res/values/styles.xml"
+          try:
+              with open(styles_path, "r", encoding="utf-8") as f:
+                  txt = f.read()
+              txt = txt.replace("Theme.AppCompat.DayNight.NoActionBar", "Theme.AppCompat.NoActionBar")
+              with open(styles_path, "w", encoding="utf-8") as f:
+                  f.write(txt)
+          except Exception:
+              pass
+          PY
+          python3 update_strings.py
+          rm -f update_strings.py
 
       - name: Generate luxury $ launcher icon across mipmap densities
         run: |
-          python3 -c '
-import os, zlib, struct
+          cat <<'PY' > make_icons.py
+          import os, zlib, struct
 
-def make_png(size):
-    # Premium dark-emerald background with golden border and bold $ glyph
-    cx = cy = (size - 1) / 2.0
-    radius = size * 0.44
-    rows = []
-    for y in range(size):
-        raw_row = bytearray([0])
-        for x in range(size):
-            dx = x - cx
-            dy = y - cy
-            dist = (dx*dx + dy*dy) ** 0.5
-            # Outer dark luxury background
-            r, g, b, a = 7, 13, 22, 255
-            if dist <= radius:
-                # Emerald gradient + subtle gold rim
-                t = max(0.0, min(1.0, (x + y) / (2.0 * size)))
-                r = int(16 * (1 - t) + 4 * t)
-                g = int(185 * (1 - t) + 120 * t)
-                b = int(129 * (1 - t) + 87 * t)
-                if abs(dist - radius) < size * 0.022:
-                    r, g, b = 234, 179, 8
-            # Draw bold "$" symbol centered
-            nx = dx / (size * 0.22)
-            ny = dy / (size * 0.28)
-            in_dollar = False
-            # Vertical stem
-            if abs(nx) < 0.13 and abs(ny) <= 1.05:
-                in_dollar = True
-            # S-like curves (top arc, middle bar, bottom arc)
-            top_ring = abs(((nx)**2 + ((ny + 0.42)/0.45)**2) ** 0.5 - 0.85) < 0.24 and ny <= 0.08
-            bot_ring = abs(((nx)**2 + ((ny - 0.42)/0.45)**2) ** 0.5 - 0.85) < 0.24 and ny >= -0.08
-            if top_ring or bot_ring:
-                in_dollar = True
-            if in_dollar and dist <= radius * 0.92:
-                r, g, b = 255, 255, 255
-            raw_row.extend([r, g, b, a])
-        rows.append(bytes(raw_row))
+          def make_png(size):
+              cx = cy = (size - 1) / 2.0
+              radius = size * 0.44
+              rows = []
+              for y in range(size):
+                  raw_row = bytearray([0])
+                  for x in range(size):
+                      dx = x - cx
+                      dy = y - cy
+                      dist = (dx * dx + dy * dy) ** 0.5
+                      r, g, b, a = 7, 13, 22, 255
+                      if dist <= radius:
+                          t = max(0.0, min(1.0, (x + y) / (2.0 * size)))
+                          r = int(16 * (1 - t) + 4 * t)
+                          g = int(185 * (1 - t) + 120 * t)
+                          b = int(129 * (1 - t) + 87 * t)
+                          if abs(dist - radius) < size * 0.022:
+                              r, g, b = 234, 179, 8
+                      nx = dx / (size * 0.22)
+                      ny = dy / (size * 0.28)
+                      in_dollar = False
+                      if abs(nx) < 0.13 and abs(ny) <= 1.05:
+                          in_dollar = True
+                      top_ring = abs(((nx) ** 2 + ((ny + 0.42) / 0.45) ** 2) ** 0.5 - 0.85) < 0.24 and ny <= 0.08
+                      bot_ring = abs(((nx) ** 2 + ((ny - 0.42) / 0.45) ** 2) ** 0.5 - 0.85) < 0.24 and ny >= -0.08
+                      if top_ring or bot_ring:
+                          in_dollar = True
+                      if in_dollar and dist <= radius * 0.92:
+                          r, g, b = 255, 255, 255
+                      raw_row.extend([r, g, b, a])
+                  rows.append(bytes(raw_row))
 
-    def chunk(tag, data):
-        return struct.pack("!I", len(data)) + tag + data + struct.pack("!I", zlib.crc32(tag + data) & 0xffffffff)
+              def chunk(tag, data):
+                  return struct.pack("!I", len(data)) + tag + data + struct.pack("!I", zlib.crc32(tag + data) & 0xffffffff)
 
-    ihdr = struct.pack("!IIBBBBB", size, size, 8, 6, 0, 0, 0)
-    idat = zlib.compress(b"".join(rows), level=6)
-    return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", ihdr) + chunk(b"IDAT", idat) + chunk(b"IEND", b"")
+              ihdr = struct.pack("!IIBBBBB", size, size, 8, 6, 0, 0, 0)
+              idat = zlib.compress(b"".join(rows), level=6)
+              return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", ihdr) + chunk(b"IDAT", idat) + chunk(b"IEND", b"")
 
-densities = {
-    "mipmap-mdpi": 48,
-    "mipmap-hdpi": 72,
-    "mipmap-xhdpi": 96,
-    "mipmap-xxhdpi": 144,
-    "mipmap-xxxhdpi": 192,
-}
-for folder, px in densities.items():
-    d = os.path.join("android/app/src/main/res", folder)
-    os.makedirs(d, exist_ok=True)
-    png = make_png(px)
-    for fname in ("ic_launcher.png", "ic_launcher_round.png", "ic_launcher_foreground.png"):
-        with open(os.path.join(d, fname), "wb") as f:
-            f.write(png)
-'
+          densities = {
+              "mipmap-mdpi": 48,
+              "mipmap-hdpi": 72,
+              "mipmap-xhdpi": 96,
+              "mipmap-xxhdpi": 144,
+              "mipmap-xxxhdpi": 192,
+          }
+          for folder, px in densities.items():
+              d = os.path.join("android/app/src/main/res", folder)
+              os.makedirs(d, exist_ok=True)
+              png = make_png(px)
+              for fname in ("ic_launcher.png", "ic_launcher_round.png", "ic_launcher_foreground.png"):
+                  with open(os.path.join(d, fname), "wb") as f:
+                      f.write(png)
+          PY
+          python3 make_icons.py
+          rm -f make_icons.py
 
       - name: Add native + / - widget to Android app
         run: |
           mkdir -p android/app/src/main/res/layout android/app/src/main/res/xml
 
           cat <<'EOF' > android/app/src/main/res/layout/widget_plus_minus.xml
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#0D1624"
-    android:gravity="center"
-    android:orientation="horizontal"
-    android:padding="8dp">
+          <?xml version="1.0" encoding="utf-8"?>
+          <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#0D1624"
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:padding="8dp">
 
-    <Button
-        android:id="@+id/btn_widget_plus"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="6dp"
-        android:layout_weight="1"
-        android:background="#10B981"
-        android:text="+"
-        android:textColor="#042117"
-        android:textSize="26sp"
-        android:textStyle="bold" />
+              <Button
+                  android:id="@+id/btn_widget_plus"
+                  android:layout_width="0dp"
+                  android:layout_height="match_parent"
+                  android:layout_marginEnd="6dp"
+                  android:layout_weight="1"
+                  android:background="#10B981"
+                  android:text="+"
+                  android:textColor="#042117"
+                  android:textSize="26sp"
+                  android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btn_widget_minus"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginStart="6dp"
-        android:layout_weight="1"
-        android:background="#1E293B"
-        android:text="-"
-        android:textColor="#F87171"
-        android:textSize="26sp"
-        android:textStyle="bold" />
-</LinearLayout>
-EOF
+              <Button
+                  android:id="@+id/btn_widget_minus"
+                  android:layout_width="0dp"
+                  android:layout_height="match_parent"
+                  android:layout_marginStart="6dp"
+                  android:layout_weight="1"
+                  android:background="#1E293B"
+                  android:text="-"
+                  android:textColor="#F87171"
+                  android:textSize="26sp"
+                  android:textStyle="bold" />
+          </LinearLayout>
+          EOF
 
           cat <<'EOF' > android/app/src/main/res/xml/widget_plus_minus_info.xml
-<?xml version="1.0" encoding="utf-8"?>
-<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialLayout="@layout/widget_plus_minus"
-    android:minWidth="140dp"
-    android:minHeight="56dp"
-    android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="0"
-    android:widgetCategory="home_screen" />
-EOF
+          <?xml version="1.0" encoding="utf-8"?>
+          <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+              android:initialLayout="@layout/widget_plus_minus"
+              android:minWidth="140dp"
+              android:minHeight="56dp"
+              android:resizeMode="horizontal|vertical"
+              android:updatePeriodMillis="0"
+              android:widgetCategory="home_screen" />
+          EOF
 
-          PKG_LINE=$(head -n 1 android/app/src/main/java/*/*/*.java 2>/dev/null || true)
           JAVA_DIR=$(find android/app/src/main/java -mindepth 3 -maxdepth 3 -type d | head -n 1)
           if [ -n "$JAVA_DIR" ]; then
             PKG_NAME=$(echo "$JAVA_DIR" | sed 's|android/app/src/main/java/||' | tr '/' '.')
             cat <<EOF > "$JAVA_DIR/MoneyPlusMinusWidget.java"
-package $PKG_NAME;
+          package $PKG_NAME;
 
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.widget.RemoteViews;
+          import android.app.PendingIntent;
+          import android.appwidget.AppWidgetManager;
+          import android.appwidget.AppWidgetProvider;
+          import android.content.Context;
+          import android.content.Intent;
+          import android.net.Uri;
+          import android.widget.RemoteViews;
 
-public class MoneyPlusMinusWidget extends AppWidgetProvider {
+          public class MoneyPlusMinusWidget extends AppWidgetProvider {
 
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        for (int appWidgetId : appWidgetIds) {
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_plus_minus);
+              @Override
+              public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+                  for (int appWidgetId : appWidgetIds) {
+                      RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_plus_minus);
 
-            Intent plusIntent = new Intent(context, MainActivity.class);
-            plusIntent.setAction(Intent.ACTION_VIEW);
-            plusIntent.setData(Uri.parse("money://quick/income"));
-            plusIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent plusPending = PendingIntent.getActivity(
-                context,
-                101,
-                plusIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-            views.setOnClickPendingIntent(R.id.btn_widget_plus, plusPending);
+                      Intent plusIntent = new Intent(context, MainActivity.class);
+                      plusIntent.setAction(Intent.ACTION_VIEW);
+                      plusIntent.setData(Uri.parse("money://quick/income"));
+                      plusIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                      PendingIntent plusPending = PendingIntent.getActivity(
+                          context,
+                          101,
+                          plusIntent,
+                          PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                      );
+                      views.setOnClickPendingIntent(R.id.btn_widget_plus, plusPending);
 
-            Intent minusIntent = new Intent(context, MainActivity.class);
-            minusIntent.setAction(Intent.ACTION_VIEW);
-            minusIntent.setData(Uri.parse("money://quick/expense"));
-            minusIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent minusPending = PendingIntent.getActivity(
-                context,
-                102,
-                minusIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-            views.setOnClickPendingIntent(R.id.btn_widget_minus, minusPending);
+                      Intent minusIntent = new Intent(context, MainActivity.class);
+                      minusIntent.setAction(Intent.ACTION_VIEW);
+                      minusIntent.setData(Uri.parse("money://quick/expense"));
+                      minusIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                      PendingIntent minusPending = PendingIntent.getActivity(
+                          context,
+                          102,
+                          minusIntent,
+                          PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                      );
+                      views.setOnClickPendingIntent(R.id.btn_widget_minus, minusPending);
 
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-        }
-    }
-}
-EOF
+                      appWidgetManager.updateAppWidget(appWidgetId, views);
+                  }
+              }
+          }
+          EOF
           fi
 
-          if [ -f android/app/src/main/AndroidManifest.xml ]; then
-            python3 -c '
-path = "android/app/src/main/AndroidManifest.xml"
-with open(path, "r", encoding="utf-8") as f:
-    xml = f.read()
+          cat <<'PY' > patch_manifest.py
+          path = "android/app/src/main/AndroidManifest.xml"
+          try:
+              with open(path, "r", encoding="utf-8") as f:
+                  xml = f.read()
 
-receiver_block = """        <receiver
-            android:name=".MoneyPlusMinusWidget"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_plus_minus_info" />
-        </receiver>
-"""
+              receiver_block = """        <receiver
+                      android:name=".MoneyPlusMinusWidget"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                      </intent-filter>
+                      <meta-data
+                          android:name="android.appwidget.provider"
+                          android:resource="@xml/widget_plus_minus_info" />
+                  </receiver>
+          """
 
-if "MoneyPlusMinusWidget" not in xml and "</application>" in xml:
-    xml = xml.replace("</application>", receiver_block + "    </application>", 1)
+              if "MoneyPlusMinusWidget" not in xml and "</application>" in xml:
+                  xml = xml.replace("</application>", receiver_block + "    </application>", 1)
 
-with open(path, "w", encoding="utf-8") as f:
-    f.write(xml)
-'
-          fi
+              with open(path, "w", encoding="utf-8") as f:
+                  f.write(xml)
+          except Exception:
+              pass
+          PY
+          python3 patch_manifest.py
+          rm -f patch_manifest.py
 
       - name: Build debug APK
         run: |
