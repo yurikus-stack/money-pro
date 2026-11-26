@@ -262,6 +262,35 @@ jobs:
           python3 patch_manifest.py
           rm -f patch_manifest.py
 
+      - name: Fix Kotlin stdlib duplicate classes conflict
+        run: |
+          cat <<'PY' > fix_kotlin.py
+          gradle_path = "android/app/build.gradle"
+          try:
+              with open(gradle_path, "r", encoding="utf-8") as f:
+                  txt = f.read()
+
+              fix_block = """
+          configurations.all {
+              resolutionStrategy {
+                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-common:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+              }
+          }
+          """
+              if "resolutionStrategy" not in txt and "android {" in txt:
+                  txt = txt.replace("android {", fix_block + "\nandroid {", 1)
+
+              with open(gradle_path, "w", encoding="utf-8") as f:
+                  f.write(txt)
+          except Exception:
+              pass
+          PY
+          python3 fix_kotlin.py
+          rm -f fix_kotlin.py
+
       - name: Build debug APK
         run: |
           cd android
