@@ -1,350 +1,1134 @@
-
 <!DOCTYPE html>
-<html lang="ru" class="dark">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>1Money BYN Pro — Учёт финансов</title>
-  <meta name="theme-color" content="#090d16" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="1Money BYN Pro" />
-
-  <!-- Встроенный PWA-манифест (Data URI) для корректной установки на Android -->
-  <link rel="manifest" href='data:application/manifest+json,{"name":"1Money BYN Pro","short_name":"1Money BYN","start_url":".","display":"standalone","background_color":"#090d16","theme_color":"#090d16","orientation":"portrait","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 192 192%27><rect width=%27192%27 height=%27192%27 rx=%2742%27 fill=%27%2310b981%27/><text x=%2796%27 y=%27118%27 font-family=%27sans-serif%27 font-size=%2776%27 font-weight=%27bold%27 fill=%27white%27 text-anchor=%27middle%27>1M</text></svg>","sizes":"192x192","type":"image/svg+xml"}]}' />
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-          },
-          colors: {
-            darkbg: '#090d16',
-            darkcard: '#111827',
-            darkelevated: '#1e293b'
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- Google Fonts: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
+  <title>1Money BYN PRO</title>
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
+    :root {
+      --bg: #070d16;
+      --card: #0e1726;
+      --card-2: #132033;
+      --border: #1e2f47;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #10b981;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-      overscroll-behavior-y: none;
     }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    @keyframes slideUp {
-      from { transform: translateY(100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 84px;
     }
-    .animate-slide-up { animation: slideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: radial-gradient(circle at center, #0f2922 0%, #070d16 70%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
     }
-    .animate-fade-in { animation: fadeIn 0.18s ease-out forwards; }
-    .privacy-blur {
-      filter: blur(7px);
-      user-select: none;
-      transition: filter 0.2s ease;
+
+    #splash-screen.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .dollar-badge {
+      width: 96px;
+      height: 96px;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #10b981, #047857);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      font-weight: 800;
+      color: #ffffff;
+      box-shadow: 0 0 40px rgba(16, 185, 129, 0.45);
+      animation: pulseDollar 1.1s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseDollar {
+      from { transform: scale(0.96); }
+      to { transform: scale(1.05); }
+    }
+
+    .splash-title {
+      margin-top: 16px;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+
+    .splash-sub {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #10b981;
+      color: #062118;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .brand-name {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .pro-badge {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-left: 6px;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--card-2);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #042117;
+    }
+
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 10px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .balance-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .balance-main {
+      font-size: 28px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .fx-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .fx-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 10px;
+    }
+
+    .fx-code {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .fx-val {
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 14px 0 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .link-action {
+      color: #34d399;
+      background: none;
+      border: none;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 4px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      gap: 10px;
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .progress-track {
+      height: 8px;
+      background: var(--bg);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .period-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+
+    .period-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 6px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .period-btn.active {
+      background: var(--card-2);
+      color: var(--text);
+    }
+
+    .period-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .stats-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat-mini {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+    }
+
+    .stat-mini .num {
+      font-size: 14px;
+      font-weight: 800;
+      margin-top: 3px;
+    }
+
+    .chart-wrap {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 150px;
+      padding-top: 14px;
+    }
+
+    .chart-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+      min-width: 0;
+    }
+
+    .chart-bar-group {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      width: 100%;
+      justify-content: center;
+      height: 115px;
+    }
+
+    .bar-inc, .bar-exp {
+      width: 42%;
+      min-height: 2px;
+      border-radius: 5px 5px 0 0;
+      transition: height 0.25s ease;
+    }
+
+    .bar-inc {
+      background: #10b981;
+    }
+
+    .bar-exp {
+      background: #ef4444;
+    }
+
+    .chart-lbl {
+      margin-top: 6px;
+      font-size: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 14px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .dot-inc, .dot-exp {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .dot-inc { background: #10b981; }
+    .dot-exp { background: #ef4444; }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      background: rgba(10, 18, 30, 0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 6px 4px 10px;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 2px;
+    }
+
+    .nav-btn.active {
+      color: #34d399;
+    }
+
+    .nav-icon {
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(0, 0, 0, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .field input, .field select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 14px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex justify-center selection:bg-emerald-500 selection:text-white">
+<body>
+  <div id="splash-screen">
+    <div class="dollar-badge">$</div>
+    <div class="splash-title">1Money BYN PRO</div>
+    <div class="splash-sub">Учёт бюджета в BYN • USD • EUR • RUB</div>
+  </div>
 
-  <!-- Основной мобильный контейнер -->
-  <div id="app" class="w-full max-w-lg bg-darkbg min-h-screen flex flex-col relative shadow-2xl border-x border-slate-800/80 pb-24">
-
-    <!-- ВЕРХНЯЯ ПАНЕЛЬ (ШАПКА) -->
-    <header class="sticky top-0 z-30 bg-darkbg/90 backdrop-blur-xl border-b border-slate-800/80 px-4 pt-3 pb-3">
-      <div class="flex items-center justify-between mb-2.5">
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-extrabold text-sm shadow-lg shadow-emerald-500/25">
-            1M
-          </div>
-          <div>
-            <div class="flex items-center gap-1.5">
-              <h1 class="text-sm font-extrabold tracking-tight leading-none">1Money <span class="text-emerald-400">BYN</span></h1>
-              <span class="px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">PRO</span>
-            </div>
-            <span class="text-[11px] text-slate-400 font-medium">Умный контроль бюджета</span>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-1.5">
-          <!-- Глазик приватности -->
-          <button onclick="togglePrivacy()" id="privacy-btn" class="p-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 transition active:scale-95" title="Скрыть/показать суммы">
-            <i data-lucide="eye" id="privacy-icon" class="w-4 h-4"></i>
-          </button>
-          <!-- Курсы валют -->
-          <button onclick="openModal('rates-modal')" class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition active:scale-95" title="Курсы валют НБРБ">
-            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span>Курсы</span>
-          </button>
-          <!-- Настройки / Архив / Бэкап -->
-          <button onclick="openModal('settings-modal')" class="p-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 transition active:scale-95" title="Настройки, Архив и Бэкап">
-            <i data-lucide="settings" class="w-4 h-4"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- КАРТОЧКА ОБЩЕГО БАЛАНСА В BYN + USD / EUR / RUB -->
-      <div class="bg-gradient-to-br from-slate-900 via-slate-800/95 to-slate-900 rounded-2xl p-4 text-white shadow-xl border border-slate-700/70 relative overflow-hidden">
-        <div class="absolute -right-8 -top-8 w-36 h-36 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none"></div>
-
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <div class="flex items-center gap-1.5 text-slate-400 text-xs font-medium mb-1">
-              <span>Доступный баланс</span>
-              <span id="header-hidden-wallets-badge" class="hidden px-1.5 py-0.5 text-[10px] rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">+ Вне баланса</span>
-            </div>
-            <div class="flex items-baseline gap-1.5">
-              <span id="total-balance-byn" class="text-2xl sm:text-3xl font-extrabold tracking-tight money-val">0.00</span>
-              <span class="text-sm font-bold text-emerald-400">BYN</span>
-            </div>
-          </div>
-
-          <!-- Быстрый перевод между счетами -->
-          <button onclick="openTransactionModal('transfer')" class="px-2.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shrink-0">
-            <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i>
-            <span>Перевод</span>
-          </button>
-        </div>
-
-        <!-- Эквиваленты в 3 валютах -->
-        <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-700/70">
-          <div class="bg-slate-950/50 rounded-xl px-2.5 py-1.5 border border-slate-700/40">
-            <div class="text-[10px] text-slate-400 font-medium flex items-center justify-between">
-              <span>USD</span>
-              <span class="text-emerald-400 font-bold">$</span>
-            </div>
-            <div id="total-balance-usd" class="text-xs sm:text-sm font-bold text-slate-100 mt-0.5 truncate money-val">0.00</div>
-          </div>
-          <div class="bg-slate-950/50 rounded-xl px-2.5 py-1.5 border border-slate-700/40">
-            <div class="text-[10px] text-slate-400 font-medium flex items-center justify-between">
-              <span>EUR</span>
-              <span class="text-blue-400 font-bold">€</span>
-            </div>
-            <div id="total-balance-eur" class="text-xs sm:text-sm font-bold text-slate-100 mt-0.5 truncate money-val">0.00</div>
-          </div>
-          <div class="bg-slate-950/50 rounded-xl px-2.5 py-1.5 border border-slate-700/40">
-            <div class="text-[10px] text-slate-400 font-medium flex items-center justify-between">
-              <span>RUB</span>
-              <span class="text-amber-400 font-bold">₽</span>
-            </div>
-            <div id="total-balance-rub" class="text-xs sm:text-sm font-bold text-slate-100 mt-0.5 truncate money-val">0</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Баннер демо-данных -->
-      <div id="demo-banner" class="hidden mt-2.5 px-3 py-2 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-between text-xs">
-        <span class="text-amber-300 font-medium">Загружены демонстрационные данные</span>
-        <button onclick="clearDemoData()" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 transition">Сбросить демо-данные</button>
-      </div>
-    </header>
-
-    <!-- ОСНОВНОЙ КОНТЕНТ ВКЛАДОК -->
-    <main class="flex-1 px-4 pt-4 space-y-5">
-
-      <!-- ==================== ВКЛАДКА 1: ОБЗОР ==================== -->
-      <section id="tab-overview" class="space-y-5 animate-fade-in">
-
-        <!-- 1. Горизонтальная лента кошельков -->
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-icon">1M</div>
         <div>
-          <div class="flex items-center justify-between mb-2.5">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Кошельки и счета</h2>
-            <button onclick="openWalletModal()" class="text-xs font-semibold text-emerald-400 hover:underline flex items-center gap-1">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Новый кошелёк
-            </button>
+          <div class="brand-name">1Money BYN <span class="pro-badge">PRO</span></div>
+          <div class="brand-sub">Умный контроль бюджета</div>
+        </div>
+      </div>
+      <button class="btn btn-sm" onclick="openRatesModal()">Курсы</button>
+    </div>
+
+    <section id="tab-home">
+      <div class="card">
+        <div class="balance-head">
+          <div>
+            <div class="muted">Доступный баланс</div>
+            <div class="balance-main" id="total-byn">0.00 BYN</div>
           </div>
-          <div id="overview-wallets-list" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1"></div>
+          <button class="btn btn-primary btn-sm" onclick="openTxModal('expense')">+ Операция</button>
         </div>
 
-        <!-- 2. Блок «Цели накопления» (Машина и другие цели) -->
-        <div class="bg-darkcard rounded-2xl p-4 border border-slate-800/90 shadow-sm space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center">
-                <i data-lucide="target" class="w-4 h-4"></i>
+        <div class="fx-grid">
+          <div class="fx-box">
+            <div class="fx-code">USD $</div>
+            <div class="fx-val" id="bal-usd">0.00</div>
+          </div>
+          <div class="fx-box">
+            <div class="fx-code">EUR €</div>
+            <div class="fx-val" id="bal-eur">0.00</div>
+          </div>
+          <div class="fx-box">
+            <div class="fx-code">RUB ₽</div>
+            <div class="fx-val" id="bal-rub">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <span>Кошельки и счета</span>
+        <button class="link-action" onclick="openWalletModal()">Новый кошелёк</button>
+      </div>
+      <div class="card" id="wallets-list"></div>
+
+      <div class="section-title">
+        <span>Цели накопления</span>
+        <button class="link-action" onclick="openGoalModal()">Новая цель</button>
+      </div>
+      <div class="card" id="goals-list"></div>
+
+      <div class="section-title">
+        <span>Регулярные платежи</span>
+        <button class="link-action" onclick="openTxModal('expense', true)">Добавить</button>
+      </div>
+      <div class="card" id="recurring-list"></div>
+    </section>
+
+    <section id="tab-ops" class="hidden">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <div>
+            <div style="font-weight:700;">Все операции</div>
+            <div class="muted">Доходы, расходы и регулярные платежи</div>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-sm btn-primary" onclick="openTxModal('income')">+ Доход</button>
+            <button class="btn btn-sm" onclick="openTxModal('expense')">- Расход</button>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="ops-list"></div>
+    </section>
+
+    <section id="tab-projects" class="hidden">
+      <div class="section-title">
+        <span>Проекты и Своё дело</span>
+        <button class="link-action" onclick="openProjectModal()">Новый проект</button>
+      </div>
+      <div class="card" id="projects-list"></div>
+
+      <div class="section-title">
+        <span>Долги и обязательства</span>
+        <button class="link-action" onclick="openDebtModal()">Добавить</button>
+      </div>
+      <div class="card" id="debts-list"></div>
+    </section>
+
+    <section id="tab-analytics" class="hidden">
+      <div class="card">
+        <div class="period-tabs">
+          <button class="period-btn active" data-p="day" onclick="setAnalyticsPeriod('day')">День</button>
+          <button class="period-btn" data-p="month" onclick="setAnalyticsPeriod('month')">Месяц</button>
+          <button class="period-btn" data-p="year" onclick="setAnalyticsPeriod('year')">Год</button>
+          <button class="period-btn" data-p="all" onclick="setAnalyticsPeriod('all')">Всё время</button>
+        </div>
+
+        <div class="period-nav">
+          <button class="btn btn-sm" onclick="shiftAnalyticsDate(-1)">◀ Назад</button>
+          <strong id="analytics-period-label" style="font-size:13px;"></strong>
+          <button class="btn btn-sm" onclick="shiftAnalyticsDate(1)">Вперёд ▶</button>
+        </div>
+
+        <div class="stats-3">
+          <div class="stat-mini">
+            <div class="muted">Доходы</div>
+            <div class="num" id="stat-income" style="color:#34d399;">0.00</div>
+          </div>
+          <div class="stat-mini">
+            <div class="muted">Расходы</div>
+            <div class="num" id="stat-expense" style="color:#f87171;">0.00</div>
+          </div>
+          <div class="stat-mini">
+            <div class="muted">Разница</div>
+            <div class="num" id="stat-net">0.00</div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <div style="font-size:12px; font-weight:700; margin-bottom:4px;">График по периоду (BYN)</div>
+          <div class="chart-bars" id="analytics-chart"></div>
+          <div class="chart-legend">
+            <span><i class="dot-inc"></i>Доходы</span>
+            <span><i class="dot-exp"></i>Расходы</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">
+      <span class="nav-icon">🏠</span>
+      <span>Главная</span>
+    </button>
+    <button class="nav-btn" data-tab="ops" onclick="switchTab('ops')">
+      <span class="nav-icon">💳</span>
+      <span>Операции</span>
+    </button>
+    <button class="nav-btn" data-tab="projects" onclick="switchTab('projects')">
+      <span class="nav-icon">📁</span>
+      <span>Проекты</span>
+    </button>
+    <button class="nav-btn" data-tab="analytics" onclick="switchTab('analytics')">
+      <span class="nav-icon">📊</span>
+      <span>График</span>
+    </button>
+  </nav>
+
+  <div id="modal" class="modal-backdrop hidden" onclick="closeModalOnBackdrop(event)">
+    <div class="modal-card" id="modal-box"></div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'one_money_byn_pro_v1';
+
+    function cloneDefaultState() {
+      return {
+        rates: { USD: 3.30, EUR: 3.55, RUB: 0.035 },
+        wallets: [
+          { id: 'w1', name: 'Наличные BYN', currency: 'BYN', balance: 0 },
+          { id: 'w2', name: 'Карта банка', currency: 'BYN', balance: 0 }
+        ],
+        goals: [],
+        transactions: [],
+        projects: [],
+        debts: [],
+        analytics: { period: 'day', offset: 0 }
+      };
+    }
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return cloneDefaultState();
+        const parsed = JSON.parse(raw);
+        const def = cloneDefaultState();
+        return {
+          ...def,
+          ...parsed,
+          rates: { ...def.rates, ...(parsed.rates || {}) },
+          analytics: { ...def.analytics, ...(parsed.analytics || {}) }
+        };
+      } catch {
+        return cloneDefaultState();
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch {}
+      renderAll();
+    }
+
+    function toBYN(amount, currency) {
+      const n = Number(amount) || 0;
+      if (currency === 'BYN') return n;
+      return n * (Number(state.rates[currency]) || 1);
+    }
+
+    function fmt(num) {
+      return (Number(num) || 0).toFixed(2);
+    }
+
+    function switchTab(tabName) {
+      ['home', 'ops', 'projects', 'analytics'].forEach(t => {
+        const el = document.getElementById('tab-' + t);
+        if (el) el.classList.toggle('hidden', t !== tabName);
+      });
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabName);
+      });
+      if (tabName === 'analytics') renderAnalytics();
+    }
+
+    function renderAll() {
+      const totalByn = state.wallets.reduce((sum, w) => sum + toBYN(w.balance, w.currency), 0);
+      document.getElementById('total-byn').textContent = fmt(totalByn) + ' BYN';
+      document.getElementById('bal-usd').textContent = fmt(totalByn / (state.rates.USD || 3.3));
+      document.getElementById('bal-eur').textContent = fmt(totalByn / (state.rates.EUR || 3.55));
+      document.getElementById('bal-rub').textContent = Math.round(totalByn / (state.rates.RUB || 0.035));
+
+      const wEl = document.getElementById('wallets-list');
+      wEl.innerHTML = state.wallets.length
+        ? state.wallets.map(w => `
+            <div class="list-item">
+              <div>
+                <div style="font-weight:700;">${escapeHtml(w.name)}</div>
+                <div class="muted">Валюта: ${escapeHtml(w.currency)}</div>
               </div>
-              <h2 class="text-sm font-bold">Цели накопления</h2>
+              <div style="font-weight:800;">${fmt(w.balance)} ${escapeHtml(w.currency)}</div>
             </div>
-            <button onclick="openGoalModal()" class="text-xs font-semibold text-emerald-400 hover:underline flex items-center gap-1">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Новая цель
-            </button>
-          </div>
-          <div id="overview-goals-list" class="space-y-3"></div>
-        </div>
+          `).join('')
+        : '<div class="muted">Кошельков пока нет</div>';
 
-        <!-- 3. Блок «Регулярные платежи» -->
-        <div class="bg-darkcard rounded-2xl p-4 border border-slate-800/90 shadow-sm space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-blue-500/15 text-blue-400 flex items-center justify-center">
-                <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+      const gEl = document.getElementById('goals-list');
+      gEl.innerHTML = state.goals.length
+        ? state.goals.map(g => {
+            const pct = Math.min(100, Math.max(0, ((g.saved || 0) / (g.target || 1)) * 100));
+            return `
+              <div class="list-item" style="display:block;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong>${escapeHtml(g.name)}</strong>
+                  <button class="btn btn-sm" onclick="addGoalFunds('${escapeHtml(g.id)}')">+ Пополнить</button>
+                </div>
+                <div class="muted" style="margin-top:4px;">${fmt(g.saved)} / ${fmt(g.target)} BYN (${Math.round(pct)}%)</div>
+                <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
               </div>
-              <h2 class="text-sm font-bold">Регулярные платежи</h2>
+            `;
+          }).join('')
+        : '<div class="muted">Добавьте цель накопления, например на авто или ремонт</div>';
+
+      const rec = state.transactions.filter(t => t.recurring);
+      const rEl = document.getElementById('recurring-list');
+      rEl.innerHTML = rec.length
+        ? rec.map(t => `
+            <div class="list-item">
+              <div>
+                <strong>${escapeHtml(t.category)}</strong>
+                <div class="muted">${escapeHtml(t.date)}</div>
+              </div>
+              <div style="color:#f87171; font-weight:700;">-${fmt(t.amount)} BYN</div>
+                </div>
+                <div style="color:#f87171; font-weight:700;">-${fmt(t.amount)} BYN</div>
             </div>
-            <button onclick="openRecurringModal()" class="text-xs font-semibold text-emerald-400 hover:underline flex items-center gap-1">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Добавить
-            </button>
-          </div>
-          <div id="overview-recurring-list" class="space-y-2"></div>
-        </div>
+          `).join('')
+        : '<div class="muted">Регулярных платежей пока нет</div>';
 
-        <!-- 4. Быстрый расход по категориям -->
-        <div class="bg-darkcard rounded-2xl p-4 border border-slate-800/90 shadow-sm">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-sm font-bold">Быстрый расход</h2>
-            <button onclick="openCategoryModal('expense')" class="text-xs font-semibold text-emerald-400 hover:underline">+ Категория</button>
-          </div>
-          <div id="quick-categories-grid" class="grid grid-cols-4 gap-2.5"></div>
-        </div>
+      const opsEl = document.getElementById('ops-list');
+      opsEl.innerHTML = state.transactions.length
+        ? [...state.transactions].reverse().map(t => {
+            const isInc = t.type === 'income';
+            return `
+              <div class="list-item">
+                <div>
+                  <strong>${escapeHtml(t.category)}</strong>
+                  <div class="muted">${escapeHtml(t.date)}${t.note ? ' • ' + escapeHtml(t.note) : ''}</div>
+                </div>
+                <div style="font-weight:800; color:${isInc ? '#34d399' : '#f87171'};">
+                  ${isInc ? '+' : '-'}${fmt(t.amount)} BYN
+                </div>
+              </div>
+            `;
+          }).join('')
+        : '<div class="muted">Операций пока нет</div>';
 
-        <!-- 5. Последние операции -->
-        <div>
-          <div class="flex items-center justify-between mb-2.5">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Последние операции</h2>
-            <button onclick="switchTab('transactions')" class="text-xs font-semibold text-emerald-400 hover:underline">Все операции →</button>
-          </div>
-          <div id="overview-recent-list" class="space-y-2"></div>
-        </div>
-      </section>
-
-      <!-- ==================== ВКЛАДКА 2: ОПЕРАЦИИ ==================== -->
-      <section id="tab-transactions" class="hidden space-y-4 animate-fade-in">
-        <!-- Поиск и фильтры (тип, кошелёк, категория, тег, проект) -->
-        <div class="bg-darkcard rounded-2xl p-3 border border-slate-800/90 space-y-2.5">
-          <div class="relative">
-            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-            <input type="text" id="tx-search" oninput="renderTransactionsTab()" placeholder="Поиск по комментарию, сумме или #тегу..." class="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500" />
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <select id="tx-filter-type" onchange="renderTransactionsTab()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-semibold text-slate-200 focus:outline-none">
-              <option value="all">Все типы операций</option>
-              <option value="expense">Только расходы</option>
-              <option value="income">Только доходы</option>
-              <option value="transfer">Переводы</option>
-            </select>
-            <select id="tx-filter-wallet" onchange="renderTransactionsTab()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-semibold text-slate-200 focus:outline-none">
-              <option value="all">Все кошельки</option>
-            </select>
-            <select id="tx-filter-category" onchange="renderTransactionsTab()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-semibold text-slate-200 focus:outline-none">
-              <option value="all">Все категории</option>
-            </select>
-            <select id="tx-filter-project" onchange="renderTransactionsTab()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-semibold text-slate-200 focus:outline-none">
-              <option value="all">Все проекты</option>
-            </select>
-          </div>
-          <!-- Быстрый фильтр по тегам -->
-          <div id="tx-tags-bar" class="flex gap-1.5 overflow-x-auto no-scrollbar pt-0.5"></div>
-        </div>
-
-        <div id="all-transactions-list" class="space-y-4"></div>
-      </section>
-
-      <!-- ==================== ВКЛАДКА 3: ПЛАН (БЮДЖЕТЫ, ДОЛГИ И ПРОЕКТЫ) ==================== -->
-      <section id="tab-plan" class="hidden space-y-4 animate-fade-in">
-        <!-- Подвкладки раздела -->
-        <div class="grid grid-cols-3 gap-1 bg-darkcard p-1 rounded-2xl border border-slate-800">
-          <button onclick="setPlanSubtab('budgets')" data-psub="budgets" class="plan-sub-btn py-2 rounded-xl text-xs font-bold transition">Лимиты</button>
-          <button onclick="setPlanSubtab('debts')" data-psub="debts" class="plan-sub-btn py-2 rounded-xl text-xs font-bold transition">Долги</button>
-          <button onclick="setPlanSubtab('projects')" data-psub="projects" class="plan-sub-btn py-2 rounded-xl text-xs font-bold transition">Проекты</button>
-        </div>
-
-        <!-- Подвкладка 3.1: Лимиты (Бюджеты) по категориям -->
-        <div id="plan-sub-budgets" class="space-y-3">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-sm font-bold">Лимиты расходов на месяц</h2>
-              <p class="text-[11px] text-slate-400">Контроль трат по категориям (в BYN)</p>
+      const pEl = document.getElementById('projects-list');
+      pEl.innerHTML = state.projects.length
+        ? state.projects.map(p => `
+            <div class="list-item">
+              <div>
+                <strong>${escapeHtml(p.name)}</strong>
+                <div class="muted">${escapeHtml(p.note || 'Проект / дело')}</div>
+              </div>
+              <div style="font-weight:700; color:#34d399;">${fmt(p.budget)} BYN</div>
             </div>
-            <button onclick="openCategoryModal('expense')" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-bold">+ Категория</button>
-          </div>
-          <div id="budgets-list" class="space-y-2.5"></div>
-        </div>
+          `).join('')
+        : '<div class="muted">Проектов пока нет</div>';
 
-        <!-- Подвкладка 3.2: Учёт долгов -->
-        <div id="plan-sub-debts" class="hidden space-y-3">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-sm font-bold">Учёт долгов</h2>
-              <p class="text-[11px] text-slate-400">Кто должен мне и кому должен я</p>
+      const dEl = document.getElementById('debts-list');
+      dEl.innerHTML = state.debts.length
+        ? state.debts.map(d => `
+            <div class="list-item">
+              <div>
+                <strong>${escapeHtml(d.person)}</strong>
+                <div class="muted">${d.kind === 'owe_me' ? 'Мне должны' : 'Я должен'}</div>
+              </div>
+              <div style="font-weight:700; color:${d.kind === 'owe_me' ? '#34d399' : '#fbbf24'};">
+                ${fmt(d.amount)} BYN
+              </div>
             </div>
-            <button onclick="openDebtModal()" class="px-3 py-1.5 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold flex items-center gap-1">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Записать долг
-            </button>
-          </div>
+          `).join('')
+        : '<div class="muted">Записей по долгам пока нет</div>';
 
-          <div class="grid grid-cols-2 gap-2.5">
-            <div class="bg-darkcard p-3 rounded-2xl border border-emerald-500/30">
-              <div class="text-[11px] text-slate-400">Мне должны</div>
-              <div id="debts-owed-to-me-total" class="text-base font-extrabold text-emerald-400 mt-0.5 money-val">0.00 BYN</div>
+      renderAnalytics();
+    }
+
+    function getReferenceDate() {
+      const base = new Date();
+      const offset = state.analytics.offset || 0;
+      const p = state.analytics.period;
+      if (p === 'day') base.setDate(base.getDate() + offset);
+      if (p === 'month') base.setMonth(base.getMonth() + offset);
+      if (p === 'year') base.setFullYear(base.getFullYear() + offset);
+      return base;
+    }
+
+    function toLocalIsoDate(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function setAnalyticsPeriod(period) {
+      state.analytics.period = period;
+      state.analytics.offset = 0;
+      document.querySelectorAll('.period-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.p === period);
+      });
+      saveState();
+    }
+
+    function shiftAnalyticsDate(delta) {
+      if (state.analytics.period === 'all') return;
+      state.analytics.offset = (state.analytics.offset || 0) + delta;
+      saveState();
+    }
+
+    function renderAnalytics() {
+      const period = state.analytics.period || 'day';
+      const ref = getReferenceDate();
+      const yyyy = ref.getFullYear();
+      const mm = String(ref.getMonth() + 1).padStart(2, '0');
+      const dd = String(ref.getDate()).padStart(2, '0');
+      const isoDay = toLocalIsoDate(ref);
+      const isoMonth = `${yyyy}-${mm}`;
+
+      let label = '';
+      let buckets = [];
+
+      if (period === 'day') {
+        label = `День: ${dd}.${mm}.${yyyy}`;
+        for (let i = -3; i <= 3; i++) {
+          const d = new Date(ref);
+          d.setDate(d.getDate() + i);
+          const key = toLocalIsoDate(d);
+          const shortLbl = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}`;
+          buckets.push({ key, label: shortLbl, match: t => t.date === key });
+        }
+      } else if (period === 'month') {
+        label = `Месяц: ${mm}.${yyyy}`;
+        for (let i = -5; i <= 0; i++) {
+          const d = new Date(ref.getFullYear(), ref.getMonth() + i, 1);
+          const mStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          buckets.push({ key: mStr, label: mStr, match: t => t.date && t.date.startsWith(mStr) });
+        }
+      } else if (period === 'year') {
+        label = `Год: ${yyyy}`;
+        for (let m = 0; m < 12; m++) {
+          const mStr = `${yyyy}-${String(m + 1).padStart(2, '0')}`;
+          buckets.push({ key: mStr, label: String(m + 1).padStart(2, '0'), match: t => t.date && t.date.startsWith(mStr) });
+        }
+      } else {
+        label = 'Всё время';
+        const years = [...new Set(state.transactions.map(t => (t.date || '').slice(0, 4)).filter(Boolean))].sort();
+        const list = years.length ? years : [String(yyyy)];
+        buckets = list.map(y => ({ key: y, label: y, match: t => t.date && t.date.startsWith(y) }));
+      }
+
+      document.getElementById('analytics-period-label').textContent = label;
+
+      let periodInc = 0;
+      let periodExp = 0;
+
+      const chartData = buckets.map(b => {
+        const matched = state.transactions.filter(b.match);
+        const inc = matched.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount || 0), 0);
+        const exp = matched.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount || 0), 0);
+        if (
+          (period === 'day' && b.key === isoDay) ||
+          (period === 'month' && b.key === isoMonth) ||
+          (period === 'year' && b.key.startsWith(String(yyyy))) ||
+          period === 'all'
+        ) {
+          periodInc += inc;
+          periodExp += exp;
+        }
+        return { label: b.label, inc, exp };
+      });
+
+      document.getElementById('stat-income').textContent = fmt(periodInc);
+      document.getElementById('stat-expense').textContent = fmt(periodExp);
+      document.getElementById('stat-net').textContent = fmt(periodInc - periodExp);
+
+      const maxVal = Math.max(1, ...chartData.flatMap(d => [d.inc, d.exp]));
+      const chartEl = document.getElementById('analytics-chart');
+      chartEl.innerHTML = chartData.map(d => {
+        const hInc = Math.round((d.inc / maxVal) * 100);
+        const hExp = Math.round((d.exp / maxVal) * 100);
+        return `
+          <div class="chart-col" title="${d.label}: +${fmt(d.inc)} / -${fmt(d.exp)}">
+            <div class="chart-bar-group">
+              <div class="bar-inc" style="height:${hInc}%"></div>
+              <div class="bar-exp" style="height:${hExp}%"></div>
             </div>
-            <div class="bg-darkcard p-3 rounded-2xl border border-rose-500/30">
-              <div class="text-[11px] text-slate-400">Я должен</div>
-              <div id="debts-i-owe-total" class="text-base font-extrabold text-rose-400 mt-0.5 money-val">0.00 BYN</div>
-            </div>
+            <div class="chart-lbl">${d.label}</div>
           </div>
+        `;
+      }).join('');
+    }
 
-          <div id="debts-list" class="space-y-2.5"></div>
+    function openModal(html) {
+      document.getElementById('modal-box').innerHTML = html;
+      document.getElementById('modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+    }
+
+    function closeModalOnBackdrop(e) {
+      if (e.target.id === 'modal') closeModal();
+    }
+
+    function openRatesModal() {
+      openModal(`
+        <div style="font-weight:700; margin-bottom:10px;">Курсы к BYN</div>
+        <div class="field"><label>1 USD в BYN</label><input id="r-usd" type="number" step="0.0001" value="${state.rates.USD}" /></div>
+        <div class="field"><label>1 EUR в BYN</label><input id="r-eur" type="number" step="0.0001" value="${state.rates.EUR}" /></div>
+        <div class="field"><label>1 RUB в BYN</label><input id="r-rub" type="number" step="0.0001" value="${state.rates.RUB}" /></div>
+        <div class="modal-actions">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveRates()">Сохранить</button>
         </div>
+      `);
+    }
 
-        <!-- Подвкладка 3.3: Проекты / Поездки / Задачи / Своё дело -->
-        <div id="plan-sub-projects" class="hidden space-y-3">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-sm font-bold">Проекты и Своё дело</h2>
-              <p class="text-[11px] text-slate-400">Поездки, ремонт, заказы и отдельные задачи</p>
-            </div>
-            <button onclick="openProjectModal()" class="px-3 py-1.5 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold flex items-center gap-1">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Новый проект
-            </button>
-          </div>
-          <div id="projects-list" class="space-y-3"></div>
+    function saveRates() {
+      state.rates.USD = Number(document.getElementById('r-usd').value) || 3.3;
+      state.rates.EUR = Number(document.getElementById('r-eur').value) || 3.55;
+      state.rates.RUB = Number(document.getElementById('r-rub').value) || 0.035;
+      closeModal();
+      saveState();
+    }
+
+    function openWalletModal() {
+      openModal(`
+        <div style="font-weight:700; margin-bottom:10px;">Новый кошелёк</div>
+        <div class="field"><label>Название</label><input id="w-name" placeholder="Например: Копилка" /></div>
+        <div class="field"><label>Валюта</label>
+          <select id="w-cur">
+            <option value="BYN">BYN</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="RUB">RUB</option>
+          </select>
         </div>
-      </section>
-
-      <!-- ==================== ВКЛАДКА 4: АНАЛИТИКА, ТАБЛИЦА И СРАВНЕНИЕ ==================== -->
-      <section id="tab-analytics" class="hidden space-y-4 animate-fade-in">
-
-        <!-- Выбор периода и навигация -->
-        <div class="bg-darkcard rounded-2xl p-3 border border-slate-800 space-y-3">
-          <div class="grid grid-cols-4 gap-1 bg-slate-900 p-1 rounded-xl">
-            <button onclick="setAnalyticsPeriod('day')" data-period="day" class="period-btn py-1.5 rounded-lg text-xs font-bold transition">День</button>
-            <button onclick="setAnalyticsPeriod('month')" data-period="month" class="period-btn py-1.5 rounded-lg text-xs font-bold transition">Месяц</button>
-            <button onclick="setAnalyticsPeriod('year')" data-period="year" class="period-btn py-1.5 rounded-lg text-xs font-bold transition">Год</button>
-            <button onclick="setAnalyticsPeriod('all')" data-period="all" class="period-btn py-1.5 rounded-lg text-xs font-bold transition">Всё</button>
-          </div>
-
-          <div id="period-navigator" class="flex items-center justify-between px-1">
-            <button onclick="shiftAnalyticsDate(-1)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700">
-              <i data-lucide="chevron-left" class="w-4 h-4"></i>
-            </button>
-            <span id="analytics-period-label" class="text-sm font-bold">Ноябрь 2026</span>
-            <button onclick="shiftAnalyticsDate(1)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700">
-              <i data-lucide="chevron-right" class="w-4 h-4"></i>
-            </button>
-          </div>
+        <div class="field"><label>Начальный баланс</label><input id="w-bal" type="number" step="0.01" value="0" /></div>
+        <div class="modal-actions">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveWallet()">Создать</button>
         </div>
+      `);
+    }
 
-        <!-- Сводные карточки периода -->
-        <div class="grid grid-cols-3 gap-2">
-          <div class="bg-darkcard p-3 rounded-2xl border border-slate-800">
-            
+    function saveWallet() {
+      const name = document.getElementById('w-name').value.trim() || 'Кошелёк';
+      const currency = document.getElementById('w-cur').value;
+      const balance = Number(document.getElementById('w-bal').value) || 0;
+      state.wallets.push({ id: 'w_' + Date.now(), name, currency, balance });
+      closeModal();
+      saveState();
+    }
+
+    function openGoalModal() {
+      openModal(`
+        <div style="font-weight:700; margin-bottom:10px;">Новая цель накопления</div>
+        <div class="field"><label>Название цели</label><input id="g-name" placeholder="Например: Авто" /></div>
+        <div class="field"><label>Сумма цели (BYN)</label><input id="g-target" type="number" step="0.01" value="1000" /></div>
+        <div class="modal-actions">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveGoal()">Сохранить</button>
+        </div>
+      `);
+    }
+
+    function saveGoal() {
+      const name = document.getElementById('g-name').value.trim() || 'Цель';
+      const target = Math.max(1, Number(document.getElementById('g-target').value) || 100);
+      state.goals.push({ id: 'g_' + Date.now(), name, target, saved: 0 });
+      closeModal();
+      saveState();
+    }
+
+    function addGoalFunds(goalId) {
+      const g = state.goals.find(x => x.id === goalId);
+      if (!g) return;
+      g.saved = (Number(g.saved) || 0) + 50;
+      saveState();
+    }
+
+    function openTxModal(type = 'expense', recurring = false) {
+      const today = toLocalIsoDate(new Date());
+      openModal(`
+        <div style="font-weight:700; margin-bottom:10px;">${recurring ? 'Регулярный платёж' : (type === 'income' ? 'Новый доход' : 'Новый расход')}</div>
+        <div class="field"><label>Категория</label><input id="t-cat" placeholder="${type === 'income' ? 'Зарплата / Подработка' : 'Продукты / Хозяйство'}" /></div>
+        <div class="field"><label>Сумма (BYN)</label><input id="t-amt" type="number" step="0.01" value="10" /></div>
+        <div class="field"><label>Дата</label><input id="t-date" type="date" value="${today}" /></div>
+        <div class="field"><label>Заметка</label><input id="t-note" placeholder="Необязательно" /></div>
+        <div class="modal-actions">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveTx('${type}', ${recurring})">Добавить</button>
+        </div>
+      `);
+    }
+
+    function saveTx(type, recurring) {
+      const category = document.getElementById('t-cat').value.trim() || (type === 'income' ? 'Доход' : 'Расход');
+      const amount = Math.abs(Number(document.getElementById('t-amt').value) || 0);
+      const date = document.getElementById('t-date').value || toLocalIsoDate(new Date());
+      const note = document.getElementById('t-note').value.trim();
+
+      state.transactions.push({
+        id: 't_' + Date.now(),
+        type,
+        category,
+        amount,
+        date,
+        note,
+        recurring
+      });
+
+      if (state.wallets[0]) {
+        const delta = type === 'income' ? amount : -amount;
+        state.wallets[0].balance = (Number(state.wallets[0].balance) || 0) + delta;
+      }
+
+      closeModal();
+      saveState();
+    }
+
+    function openProjectModal() {
+      openModal(`
+        <div style="font-weight:700; margin-bottom:10px;">Новый проект / дело</div>
+        <div class="field"><label>Название</label><input id="p-name" placeholder="Например: Ремонт / Заказ" /></div>
+        <div class="field"><label>Бюджет (BYN)</label><input id="p-bud" type="number" step="0.01" value="200" /></div>
+        <div class="field"><label>Описание</label><input id="p-note" placeholder="Детали" /></div>
+        <div class="modal-actions">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveProject()">Сохранить</button>
+        </div>
+      `);
+    }
+
+    function saveProject() {
+      const name = document.getElementById('p-name').value.trim() || 'Проект';
+      const budget = Number(document.getElementById('p-bud').value) || 0;
+      const note = document.getElementById('p-note').value.trim();
+      state.projects.push({ id: 'p_' + Date.now(), name, budget, note });
+      closeModal();
+      saveState();
+    }
+
+    function openDebtModal() {
+      openModal(`
+        <div style="font-weight:700; margin-bottom:10px;">Новый долг</div>
+        <div class="field"><label>Кто</label><input id="d-person" placeholder="Имя" /></div>
+        <div class="field"><label>Тип</label>
+          <select id="d-kind">
+            <option value="owe_me">Мне должны</option>
+            <option value="i_owe">Я должен</option>
+          </select>
+        </div>
+        <div class="field"><label>Сумма (BYN)</label><input id="d-amt" type="number" step="0.01" value="50" /></div>
+        <div class="modal-actions">
+          <button class="btn" onclick="closeModal()">Отмена</button>
+          <button class="btn btn-primary" onclick="saveDebt()">Сохранить</button>
+        </div>
+      `);
+    }
+
+    function saveDebt() {
+      const person = document.getElementById('d-person').value.trim() || 'Контакт';
+      const kind = document.getElementById('d-kind').value;
+      const amount = Number(document.getElementById('d-amt').value) || 0;
+      state.debts.push({ id: 'd_' + Date.now(), person, kind, amount });
+      closeModal();
+      saveState();
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function hideSplash() {
+      const sp = document.getElementById('splash-screen');
+      if (sp) sp.classList.add('hide');
+    }
+
+    try {
+      renderAll();
+    } catch {}
+
+    setTimeout(hideSplash, 1200);
+    window.addEventListener('load', () => setTimeout(hideSplash, 1200));
+  </script>
+</body>
+</html>
+  
