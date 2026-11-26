@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>1Money BYN Pro — Учёт финансов</title>
+  <meta name="theme-color" content="#090d16" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="1Money BYN Pro" />
+
+  <!-- Встроенный PWA-манифест (Data URI) для корректной установки на Android -->
+  <link rel="manifest" href='data:application/manifest+json,{"name":"1Money BYN Pro","short_name":"1Money BYN","start_url":".","display":"standalone","background_color":"#090d16","theme_color":"#090d16","orientation":"portrait","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 192 192%27><rect width=%27192%27 height=%27192%27 rx=%2742%27 fill=%27%2310b981%27/><text x=%2796%27 y=%27118%27 font-family=%27sans-serif%27 font-size=%2776%27 font-weight=%27bold%27 fill=%27white%27 text-anchor=%27middle%27>1M</text></svg>","sizes":"192x192","type":"image/svg+xml"}]}' />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            darkbg: '#090d16',
+            darkcard: '#111827',
+            darkelevated: '#1e293b'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: none;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up { animation: slideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-fade-in { animation: fadeIn 0.18s ease-out forwards; }
+    .privacy-blur {
+      filter: blur(7px);
+      user-select: none;
+      transition: filter 0.2s ease;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex justify-center selection:bg-emerald-500 selection:text-white">
+
+  <!-- Основной мобильный контейнер -->
+  <div id="app" class="w-full max-w-lg bg-darkbg min-h-screen flex flex-col relative shadow-2xl border-x border-slate-800/80 pb-24">
+
+    <!-- ВЕРХНЯЯ ПАНЕЛЬ (ШАПКА) -->
+    <header class="sticky top-0 z-30 bg-darkbg/90 backdrop-blur-xl border-b border-slate-800/80 px-4 pt-3 pb-3">
+      <div class="flex items-center justify-between mb-2.5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-extrabold text-sm shadow-lg shadow-emerald-500/25">
+            1M
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h1 class="text-sm font-extrabold tracking-tight leading-none">1Money <span class="text-emerald-400">BYN</span></h1>
+              <span class="px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">PRO</span>
+            </div>
+            <span class="text-[11px] text-slate-400 font-medium">Умный контроль бюджета</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <!-- Глазик приватности -->
+          <button onclick="togglePrivacy()" id="privacy-btn" class="p-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 transition active:scale-95" title="Скрыть/показать суммы">
+            <i data-lucide="eye" id="privacy-icon" class="w-4 h-4"></i>
+          </button>
+          <!-- Курсы валют -->
+          <button onclick="openModal('rates-modal')" class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition active:scale-95" title="Курсы валют НБРБ">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Курсы</span>
+          </button>
+          <!-- Настройки / Архив / Бэкап -->
+          <button onclick="openModal('settings-modal')" class="p-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 transition active:scale-95" title="Настройки, Архив и Бэкап">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- КАРТОЧКА ОБЩЕГО БАЛАНСА В BYN + USD / EUR / RUB -->
+      <div class="bg-gradient-to-br from-slate-900 via-slate-800/95 to-slate-900 rounded-2xl p-4 text-white shadow-xl border border-slate-700/70 relative overflow-hidden">
+        <div class="absolute -right-8 -top-8 w-36 h-36 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-1.5 text-slate-400 text-xs font-medium mb-1">
+              <span>Доступный баланс</span>
+              <span id="header-hidden-wallets-badge" class="hidden px-1.5 py-0.5 text-[10px] rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">+ Вне баланса</span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="total-balance-byn" class="text-2xl sm:text-3xl font-extrabold tracking-tight money-val">0.00</span>
+              <span class="text-sm font-bold text-emerald-400">BYN</span>
+            </div>
+          </div>
+
+          <!-- Быстрый перевод между счетами -->
+          <button onclick="openTransactionModal('transfer')" class="px-2.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shrink-0">
+            <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i>
+            <span>Перевод</span>
+          </button>
+        </div>
+
+        <!-- Эквиваленты в 3 валютах -->
+        <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-700/70">
+          <div class="bg-slate-950/50 rounded-xl px-2.5 py-1.5 border border-slate-700/40">
+            <div class="text-[10px] text-slate-400 font-medium flex items-center justify-between">
+              <span>USD</span>
+              <span class="text-emerald-400 font-bold">$</span>
+            </div>
+            <div id="total-balance-usd" class="text-xs sm:text-sm font-bold text-slate-100 mt-0.5 truncate money-val">0.00</div>
+          </div>
+          <div class="bg-slate-950/50 rounded-xl px-2.5 py-1.5 border border-slate-700/40">
+            <div class="text-[10px] text-slate-400 font-medium flex items-center justify-between">
+              <span>EUR</span>
+              <span class="text-blue-400 font-bold">€</span>
+            </div>
+            <div id="total-balance-eur" class="text-xs sm:text-sm font-bold text-slate-100 mt-0.5 truncate money-val">0.00</div>
+          </div>
+          <div class="bg-slate-950/50 rounded-xl px-2.5 py-1.5 border border-slate-700/40">
+            <div class="text-[10px] text-slate-400 font-medium flex items-center justify-between">
+              <span>RUB</span>
+              <span class="text-amber-400 font-bold">₽</span>
+            </div>
+            <div id="total-balance-rub" class="text-xs sm:text-sm font-bold text-slate-100 mt-0.5 truncate money-val">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Баннер демо-данных -->
+      <div id="demo-banner" class="hidden mt-2.5 px-3 py-2 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-between text-xs">
+        <span class="text-amber-300 font-medium">Загружены демонстрационные данные</span>
+        <button onclick="clearDemoData()" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 transition">Сбросить демо-данные</button>
+      </div>
+    </header>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ ВКЛАДОК -->
+    <main class="flex-1 px-4 pt-4 space-y-5">
+
+      <!-- ==================== ВКЛАДКА 1: ОБЗОР ==================== -->
+      <section id="tab-overview" class="space-y-5 animate-fade-in">
+
+        <!-- 1. Горизонтальная лента кошельков -->
+        <div>
+          <div class="flex items-center justify-between mb-2.5">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Кошельки и счета</h2>
+            <button onclick="openWalletModal()" class="text-xs font-semibold text-emerald-400 hover:underline flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Новый кошелёк
+            </button>
+          </div>
+          <div id="overview-wallets-list" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1"></div>
+        </div>
+
+        <!-- 2. Блок «Цели накопления» (Машина и другие цели) -->
+        <div class="bg-darkcard rounded-2xl p-4 border border-slate-800/90 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                <i data-lucide="target" class="w-4 h-4"></i>
+              </div>
+              <h2 class="text-sm font-bold">Цели накопления</h2>
+            </div>
+            <button onclick="openGoalModal()" class="text-xs font-semibold text-emerald-400 hover:underline flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Новая цель
+            </button>
+          </div>
+          <div id="overview-goals-list" class="space-y-3"></div>
+        </div>
+
+        <!-- 3. Блок «Регулярные платежи» -->
+        <div class="bg-darkcard rounded-2xl p-4 border border-slate-800/90 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-lg bg-blue-500/15 text-blue-400 flex items-center justify-center">
+                <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+              </div>
+              <h2 class="text-sm font-bold">Регулярные платежи</h2>
+            </div>
+            <button onclick="openRecurringModal()" class="text-xs font-semibold text-emerald-400 hover:underline flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Добавить
+            </button>
+          </div>
+          <div id="overview-recurring-list" class="space-y-2"></div>
+        </div>
+
+        <!-- 4. Быстрый расход по категориям -->
+        <div class="bg-darkcard rounded-2xl p-4 border border-slate-800/90 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-bold">Быстрый расход</h2>
+            <button onclick="openCategoryModal('expense')" class="text-xs font-semibold text-emerald-400 hover:underline">+ Категория</button>
+          </div>
+          <div id="quick-categories-grid" class="grid grid-cols-4 gap-2.5"></div>
+        </div>
+
+        <!-- 5. Последние операции -->
+        <div>
+          <div class="flex items-center justify-between mb-2.5">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Последние операции</h2>
+            <button onclick="switchTab('transactions')" class="text-xs font-semibold text-emerald-400 hover:underline">Все операции →</button>
+          </div>
+          <div id="overview-recent-list" class="space-y-2"></div>
+        </div>
+      </section>
+
+      <!-- ==================== ВКЛАДКА 2: ОПЕРАЦИИ ==================== -->
+      <section id="tab-transactions" class="hidden space-y-4 animate-fade-in">
+        <!-- Поиск и фильтры (тип, кошелёк, категория, тег, проект) -->
+        <div class="bg-darkcard rounded-2xl p-3 border border-slate-800/90 space-y-2.5">
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="tx-search" oninput="renderTransactionsTab()" placeholder="Поиск по комментарию, сумме или #тегу..." class="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <select id="tx-filter-type" onchange="renderTransactionsTab()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-semibold text-slate-200 focus:outline-none">
+              <option value="all">Все типы операций</option>
+              <option value="expense">Только расходы</option>
+              <option value="income">Только доходы</option>
+              <option value="transfer">Переводы</option>
+            </select>
+            <select id="tx-filter-wallet" onchange="renderTransactionsTab()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-semibold text-slate-200 focus:outline-none">
+              <option value="all">Все кошельки</option>
+            </select>
+            <select id="tx-filter-category" onchange="renderTransactionsTab()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-semibold text-slate-200 focus:outline-none">
+              <option value="all">Все категории</option>
+            </select>
+            <select id="tx-filter-project" onchange="renderTransactionsTab()" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-semibold text-slate-200 focus:outline-none">
+              <option value="all">Все проекты</option>
+            </select>
+          </div>
+          <!-- Быстрый фильтр по тегам -->
+          <div id="tx-tags-bar" class="flex gap-1.5 overflow-x-auto no-scrollbar pt-0.5"></div>
+        </div>
+
+        <div id="all-transactions-list" class="space-y-4"></div>
+      </section>
+
+      <!-- ==================== ВКЛАДКА 3: ПЛАН (БЮДЖЕТЫ, ДОЛГИ И ПРОЕКТЫ) ==================== -->
+      <section id="tab-plan" class="hidden space-y-4 animate-fade-in">
+        <!-- Подвкладки раздела -->
+        <div class="grid grid-cols-3 gap-1 bg-darkcard p-1 rounded-2xl border border-slate-800">
+          <button onclick="setPlanSubtab('budgets')" data-psub="budgets" class="plan-sub-btn py-2 rounded-xl text-xs font-bold transition">Лимиты</button>
+          <button onclick="setPlanSubtab('debts')" data-psub="debts" class="plan-sub-btn py-2 rounded-xl text-xs font-bold transition">Долги</button>
+          <button onclick="setPlanSubtab('projects')" data-psub="projects" class="plan-sub-btn py-2 rounded-xl text-xs font-bold transition">Проекты</button>
+        </div>
+
+        <!-- Подвкладка 3.1: Лимиты (Бюджеты) по категориям -->
+        <div id="plan-sub-budgets" class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-sm font-bold">Лимиты расходов на месяц</h2>
+              <p class="text-[11px] text-slate-400">Контроль трат по категориям (в BYN)</p>
+            </div>
+            <button onclick="openCategoryModal('expense')" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-bold">+ Категория</button>
+          </div>
+          <div id="budgets-list" class="space-y-2.5"></div>
+        </div>
+
+        <!-- Подвкладка 3.2: Учёт долгов -->
+        <div id="plan-sub-debts" class="hidden space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-sm font-bold">Учёт долгов</h2>
+              <p class="text-[11px] text-slate-400">Кто должен мне и кому должен я</p>
+            </div>
+            <button onclick="openDebtModal()" class="px-3 py-1.5 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Записать долг
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="bg-darkcard p-3 rounded-2xl border border-emerald-500/30">
+              <div class="text-[11px] text-slate-400">Мне должны</div>
+              <div id="debts-owed-to-me-total" class="text-base font-extrabold text-emerald-400 mt-0.5 money-val">0.00 BYN</div>
+            </div>
+            <div class="bg-darkcard p-3 rounded-2xl border border-rose-500/30">
+              <div class="text-[11px] text-slate-400">Я должен</div>
+              <div id="debts-i-owe-total" class="text-base font-extrabold text-rose-400 mt-0.5 money-val">0.00 BYN</div>
+            </div>
+          </div>
+
+          <div id="debts-list" class="space-y-2.5"></div>
+        </div>
+
+        <!-- Подвкладка 3.3: Проекты / Поездки / Задачи / Своё дело -->
+        <div id="plan-sub-projects" class="hidden space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-sm font-bold">Проекты и Своё дело</h2>
+              <p class="text-[11px] text-slate-400">Поездки, ремонт, заказы и отдельные задачи</p>
+            </div>
+            <button onclick="openProjectModal()" class="px-3 py-1.5 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Новый проект
+            </button>
+          </div>
+          <div id="projects-list" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- ==================== ВКЛАДКА 4: АНАЛИТИКА, ТАБЛИЦА И СРАВНЕНИЕ ==================== -->
+      <section id="tab-analytics" class="hidden space-y-4 animate-fade-in">
+
+        <!-- Выбор периода и навигация -->
+        <div class="bg-darkcard rounded-2xl p-3 border border-slate-800 space-y-3">
+          <div class="grid grid-cols-4 gap-1 bg-slate-900 p-1 rounded-xl">
+            <button onclick="setAnalyticsPeriod('day')" data-period="day" class="period-btn py-1.5 rounded-lg text-xs font-bold transition">День</button>
+            <button onclick="setAnalyticsPeriod('month')" data-period="month" class="period-btn py-1.5 rounded-lg text-xs font-bold transition">Месяц</button>
+            <button onclick="setAnalyticsPeriod('year')" data-period="year" class="period-btn py-1.5 rounded-lg text-xs font-bold transition">Год</button>
+            <button onclick="setAnalyticsPeriod('all')" data-period="all" class="period-btn py-1.5 rounded-lg text-xs font-bold transition">Всё</button>
+          </div>
+
+          <div id="period-navigator" class="flex items-center justify-between px-1">
+            <button onclick="shiftAnalyticsDate(-1)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <span id="analytics-period-label" class="text-sm font-bold">Ноябрь 2026</span>
+            <button onclick="shiftAnalyticsDate(1)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700">
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Сводные карточки периода -->
+        <div class="grid grid-cols-3 gap-2">
+          <div class="bg-darkcard p-3 rounded-2xl border border-slate-800">
+            
